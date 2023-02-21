@@ -15,7 +15,7 @@ while (!uhadnuto)
     {
         string? s = Console.ReadLine();
 
-        if(s == "konec")
+        if (s == "konec")
         {
             return;
         }
@@ -39,7 +39,7 @@ while (!uhadnuto)
             uhadnuto = true;
             s = Console.ReadLine();
 
-            if(s?.ToLower() == "y")
+            if (s?.ToLower() == "y")
             {
                 uhadnuto = false;
                 cislo = HadaneCislo();
@@ -55,7 +55,7 @@ while (!uhadnuto)
     catch (System.FormatException)
     {
         Console.WriteLine("Nezadal si zadne cislo. Zkus to znovu.");
-        
+
     }
 
 }
