@@ -1,0 +1,15 @@
+C:\Users\honzi\ppt23_pechaj10\bin\Debug\net6.0\ppt23_pechaj10.exe
+C:\Users\honzi\ppt23_pechaj10\bin\Debug\net6.0\ppt23_pechaj10.deps.json
+C:\Users\honzi\ppt23_pechaj10\bin\Debug\net6.0\ppt23_pechaj10.runtimeconfig.json
+C:\Users\honzi\ppt23_pechaj10\bin\Debug\net6.0\ppt23_pechaj10.dll
+C:\Users\honzi\ppt23_pechaj10\bin\Debug\net6.0\ppt23_pechaj10.pdb
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ppt23_pechaj10.csproj.AssemblyReference.cache
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ppt23_pechaj10.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ppt23_pechaj10.AssemblyInfoInputs.cache
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ppt23_pechaj10.AssemblyInfo.cs
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ppt23_pechaj10.csproj.CoreCompileInputs.cache
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ppt23_pechaj10.dll
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\refint\ppt23_pechaj10.dll
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ppt23_pechaj10.pdb
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ppt23_pechaj10.genruntimeconfig.cache
+C:\Users\honzi\ppt23_pechaj10\obj\Debug\net6.0\ref\ppt23_pechaj10.dll

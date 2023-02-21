@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "ppt23_pechaj10/1.0.0": {
+        "runtime": {
+          "ppt23_pechaj10.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ppt23_pechaj10/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
