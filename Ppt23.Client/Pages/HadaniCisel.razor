@@ -1,0 +1,47 @@
+﻿@page "/hra"
+
+<head>
+    <meta charset="utf-8" />
+    <title>Hádání čísla</title>
+</head>
+
+<h1>Hádej číslo!</h1>
+
+<input @bind-value=hadaneCislo @bind-value:event="oninput" />
+
+<button @onclick="Hadam">Hádám</button>
+
+<span style="background:red">@hadaneCislo</span>
+
+@code
+{
+    int hadaneCislo;
+
+    void Hadam()
+    {
+        Random r = new Random();
+        int cislo = randomCislo();
+        //Console.WriteLine(cislo);
+
+
+        int randomCislo() => r.Next(1, 101); // lambda expression
+
+        // int.TryParse(s, out int hadaneCislo){ }
+
+        if (hadaneCislo > cislo)
+        {
+            //<span style="background:yellow">Hádané číslo je větší než zadané</span>
+
+        }
+        else if (hadaneCislo < cislo)
+        {
+            //<span style="background:yellow">Hádané číslo je menší než zadané</span>
+        }
+        else if (hadaneCislo == cislo)
+        {
+            //<span style="background:green">Uhádl si číslo!</span>
+
+        }
+    }
+}
+
