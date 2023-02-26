@@ -1,5 +1,4 @@
-﻿
-Random r = new Random();
+﻿Random r = new Random();
 int cislo = HadaneCislo();
 int hadaneCislo;
 //Console.WriteLine(cislo);
@@ -7,7 +6,7 @@ bool uhadnuto = false;
 
 Console.WriteLine("Hadej!");
 
-int HadaneCislo() => r.Next(1, 100); // lambda expression
+int HadaneCislo() => r.Next(1, 101); // lambda expression
 
 while (!uhadnuto)
 {
