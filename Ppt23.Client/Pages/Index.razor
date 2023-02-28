@@ -2,54 +2,13 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Hádání čísla</title>
+    <title>Úvodní strana</title>
 </head>
 
-<h1>Hádej číslo!</h1>
-
-<input @bind-value=hadaneCislo @bind-value:event="oninput" />
-
-<button @onclick="Hadam">Hádám</button>
-<button @onclick="restart">Nové číslo</button>
-<br />
-<span style="background:red">@s</span>
-<p>Číslo k uhodnutí(debug):</p>
-<span style="background:green">@cislo</span>
+<h1>Prázdná stránka</h1>
+<p>Hra se nachází pod url <i>/hra</i></p>
 
 @code
 {
-    Random r = new Random();
 
-    int hadaneCislo;
-    string s;
-    int cislo;
-
-    int randomCislo() => r.Next(1, 101);
-
-    void restart()
-    {
-        cislo = randomCislo();
-    }
-
-    void Hadam()
-    {  
-
-        if (hadaneCislo > cislo)
-        {
-            //<span style="background:yellow">Hádané číslo je větší než zadané</span>
-            s = "Hádané číslo je větší než zadané";
-
-        }
-        else if (hadaneCislo < cislo)
-        {
-            //<span style="background:yellow">Hádané číslo je menší než zadané</span>
-            s = "Hádané číslo je menší než zadané";
-        }
-        else if (hadaneCislo == cislo)
-        {
-            //<span style="background:green">Uhádl si číslo!</span>
-            s = "Uhádl jsi číslo!";
-
-        }
-    }
 }

@@ -10,38 +10,46 @@
 <input @bind-value=hadaneCislo @bind-value:event="oninput" />
 
 <button @onclick="Hadam">Hádám</button>
-
-<span style="background:red">@hadaneCislo</span>
+<button @onclick="restart">Nové číslo</button>
+<br />
+<span style="background:red">@s</span>
+<p>Číslo k uhodnutí(debug):</p>
+<span style="background:green">@cislo</span>
 
 @code
 {
+    Random r = new Random();
+
     int hadaneCislo;
+    string s;
+    int cislo;
+
+    int randomCislo() => r.Next(1, 101);
+
+    void restart()
+    {
+        cislo = randomCislo();
+    }
 
     void Hadam()
     {
-        Random r = new Random();
-        int cislo = randomCislo();
-        //Console.WriteLine(cislo);
-
-
-        int randomCislo() => r.Next(1, 101); // lambda expression
-
-        // int.TryParse(s, out int hadaneCislo){ }
 
         if (hadaneCislo > cislo)
         {
             //<span style="background:yellow">Hádané číslo je větší než zadané</span>
+            s = "Hádané číslo je větší než zadané";
 
         }
         else if (hadaneCislo < cislo)
         {
             //<span style="background:yellow">Hádané číslo je menší než zadané</span>
+            s = "Hádané číslo je menší než zadané";
         }
         else if (hadaneCislo == cislo)
         {
             //<span style="background:green">Uhádl si číslo!</span>
+            s = "Uhádl jsi číslo!";
 
         }
     }
 }
-
