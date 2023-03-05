@@ -28,15 +28,14 @@ jobs:
       run: dotnet publish Ppt23.Client/Ppt23.Client.sln --configuration Release --output ${{env.PUBLISH_DIR}}
       # ☝️ Upravte dle názvu vašeho .sln
 
-    # zkopíruje index.html do 404.html který je předložen, kdykoliv vstoupíme na stránku, která neexistuje
-    - name: copy index.html to 404.html
-      run: cp ${{env.PUBLISH_DIR}}/wwwroot/index.html ${{env.PUBLISH_DIR}}/wwwroot/404.html
-
     # změní tag base v index.html from '/' na 'ppt_22' což je gh page k tomuto repu
     - name: Change base-tag in index.html from to your gh repo
       run: sed -i 's/<base href="\/" \/>/<base href="\/ppt23_pechaj10\/" \/>/g' ${{env.PUBLISH_DIR}}/wwwroot/index.html
       # ☝️ Upravte  dle názvu vašeho repozitáře
 
+      # zkopíruje index.html do 404.html který je předložen, kdykoliv vstoupíme na stránku, která neexistuje
+    - name: copy index.html to 404.html
+      run: cp ${{env.PUBLISH_DIR}}/wwwroot/index.html ${{env.PUBLISH_DIR}}/wwwroot/404.html
       
     # přidá .nojekyll, čímž říká gh pages, že toto není jekkyl projekt (jinak to nedovolí soubor s podtržítkem)
     - name: Add .nojekyll file
