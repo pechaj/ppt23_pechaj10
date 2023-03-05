@@ -5,23 +5,29 @@
     <title>Hádání čísla</title>
 </head>
 
-<h1>Hádej číslo!</h1>
+<body class="bg-zinc-400">
 
-<input @bind-value=hadaneCislo @bind-value:event="oninput" />
+<h1 class="font-mono text-l underline decoration-black">Hádej číslo!</h1>
 
-<button @onclick="Hadam">Hádám</button>
-<button @onclick="restart">Nové číslo</button>
+<input @bind-value=hadaneCislo @bind-value:event="oninput" class="border-teal-600 w-15" />
+
+<button class="border-2 bg-slate-700 text-gray-50 rounded-md px-2 py-1 mx-1 my-1 font-mono" @onclick="Hadam">Hádám</button>
+<button class="border-2 bg-slate-700 text-gray-50 rounded-md px-2 py-1 mx-1 my-1 font-mono" @onclick="restart">Nové číslo</button>
 <br />
-<span style="background:red">@s</span>
-<p>Číslo k uhodnutí(debug):</p>
-<span style="background:green">@cislo</span>
 
+<span class="font-bold font-mono bg-red-200">@s</span>
+
+<p class="w-auto">Číslo k uhodnutí(debug):</p>
+
+<p class="italic bg-green-200 font-bold font-mono px-10 w-24">@cislo</p>
+
+</body>
 @code
 {
     Random r = new Random();
 
     int hadaneCislo;
-    string s;
+    string? s;
     int cislo;
 
     int randomCislo() => r.Next(1, 101);
@@ -36,20 +42,15 @@
 
         if (hadaneCislo > cislo)
         {
-            //<span style="background:yellow">Hádané číslo je větší než zadané</span>
             s = "Hádané číslo je větší než zadané";
-
         }
         else if (hadaneCislo < cislo)
         {
-            //<span style="background:yellow">Hádané číslo je menší než zadané</span>
             s = "Hádané číslo je menší než zadané";
         }
         else if (hadaneCislo == cislo)
         {
-            //<span style="background:green">Uhádl si číslo!</span>
             s = "Uhádl jsi číslo!";
-
         }
     }
 }
