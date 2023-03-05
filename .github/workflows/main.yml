@@ -33,6 +33,9 @@ jobs:
       run: sed -i 's/<base href="\/" \/>/<base href="\/ppt23_pechaj10\/" \/>/g' ${{env.PUBLISH_DIR}}/wwwroot/index.html
       # ☝️ Upravte  dle názvu vašeho repozitáře
 
+      # zkopíruje index.html do 404.html který je předložen, kdykoliv vstoupíme na stránku, která neexistuje
+    - name: copy index.html to 404.html
+      run: cp ${{env.PUBLISH_DIR}}/wwwroot/index.html ${{env.PUBLISH_DIR}}/wwwroot/404.html
       
     # přidá .nojekyll, čímž říká gh pages, že toto není jekkyl projekt (jinak to nedovolí soubor s podtržítkem)
     - name: Add .nojekyll file
@@ -45,7 +48,4 @@ jobs:
       with:
         FOLDER: ${{env.PUBLISH_DIR}}/wwwroot #tady máme vypublikovanou celou aplikaci a ta bude v kořenovém adresáři ve větvi gh-pages
         #obsahuje například soubor index.html, který se použije k načtení celé stránky.
-        
-    # zkopíruje index.html do 404.html který je předložen, kdykoliv vstoupíme na stránku, která neexistuje
-    - name: copy index.html to 404.html
-      run: cp ${{env.PUBLISH_DIR}}/wwwroot/index.html ${{env.PUBLISH_DIR}}/wwwroot/404.html
+      
