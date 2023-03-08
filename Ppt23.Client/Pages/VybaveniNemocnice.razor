@@ -1,14 +1,62 @@
 ﻿@page "/vybaveni"
+@using Ppt23.Client.Components;
+
 <head>
     <meta charset="utf-8" />
     <title>WIP</title>
 </head>
 
 <body>
-    <div>
-        <p class="text-center text-2xl text-white font-mono italic underline md:decoration-double">Zde nemáš být</p>
+    <div class="m-5 rounded">
+        <div class="text-white text-size-xl font-mono bold">Pocet vybaveni: @seznamVybaveni.Count</div>
+        <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="noveVybaveni">Generovat nové vybavení</button>
+        <div class="grid grid-cols-5 auto-cols-max bg-slate-900 text-white p-2 rounded-t-lg">
+                <div>Název</div>
+                <div>Datum nákupu</div>
+                <div>Datum poslední revize</div>
+                <div>Potřebuje revizi</div>
+                <div> </div>
+        </div>
+        <div class="bg-white rounded-b-lg">
+            @foreach (var vyb in seznamVybaveni)
+                {
+                <div class="hover:bg-gray-200 grid grid-cols-5 auto-cols-max 
+                @((vyb.IsRevNeeded) ? "bg-red-600" : "")">
+
+                        <VybaveRow Vyb="vyb" 
+                        SmazEventCallback="() => seznamVybaveni.Remove(vyb)" 
+                        RevizeEventCallBack="() => vyb.lastRev = DateTime.Now">
+
+                        </VybaveRow>
+
+                </div>
+                }
+        </div>
     </div>
 </body>
+
 @code {
+    List<VybaveniVm> seznamVybaveni = new List<VybaveniVm>();
+
+    public VybaveniNemocnice()
+    {
+        seznamVybaveni = VybaveniVm.VratRandSeznam();
+    }
+
+    public void noveVybaveni()
+    {
+        seznamVybaveni.Clear();
+        seznamVybaveni = VybaveniVm.VratRandSeznam();
+    }
+
+    public bool needRev(VybaveniVm vyb)
+    {
+        if (vyb.IsRevNeeded)
+        {
+            return true;
+        }
+        else return false;
+    }
+
 
 }

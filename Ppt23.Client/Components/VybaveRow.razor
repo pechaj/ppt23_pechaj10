@@ -1,0 +1,22 @@
+<div class="p-2">@Vyb.Name</div>
+<div class="p-2">@Vyb.dateBuy</div>
+<div class="p-2">@Vyb.lastRev.Year-@Vyb.lastRev.Month-@Vyb.lastRev.Day</div>
+<div class="p-2">@((Vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+
+<div>
+    <button class="rounded border-2 border-black text-black p-1 bg-red-400 hover:bg-red-600" 
+    @onclick ="() => SmazEventCallback.InvokeAsync()">
+        Smazat
+    </button>
+    <button class="rounded border-2 border-black text-black m-2 p-1 bg-sky-500 hover:bg-sky-600"
+    @onclick = "() => RevizeEventCallBack.InvokeAsync()">
+        Provést revizi
+    </button>
+</div>
+@code{
+    [Parameter] public VybaveniVm? Vyb{ get; set; }
+    [Parameter] public EventCallback SmazEventCallback { get; set; }
+    [Parameter] public EventCallback RevizeEventCallBack { get; set; }
+
+
+}
