@@ -1,17 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="flex justify-between p-2 w-full bg-gradient-to-b from-blue-500 to-cyan-500">
-    <div>
-        <NavLink href="" class="font-bold font-sans text-white text-2xl hover:text-blue-600">Home</NavLink>
-    </div>
-    <div>
-        <NavLink href="hra" class="text-right m-5 font-light font-sans text-white text-xl hover:text-blue-600">Hádání čísla</NavLink>
-        <NavLink href="vybaveni" class="text-right m-5 font-light font-sans text-white text-xl hover:text-blue-600">Vybavení nemocnice</NavLink>
+<div class="flex flex-col">
+    <header class="bg-gray-300 flex justify-between flex-col sm:flex-row w-full">
+        <div class="flex flex-row">
+            <div class="px-3 bg-contain bg-center h-20 w-20" style="background-image: url(https://img.lovepik.com/free-png/20220126/lovepik-fitness-logo-png-image_401759034_wh300.png)"></div>
+            <a href="" class="self-center font-bold font-sans text-black text-xl hover:underline decoration-sky-500">Homepage</a>
+        </div>
+        <div class="place-self-center">
+            <a class="text-right m-5 p-1 font-medium font-sans text-black text-l border-2 border-slate-400 rounded-sm hover:bg-blue-700">Hledání</a>
+            <a class="text-right m-5 p-1 font-medium font-sans text-black  text-l">Kontakt</a>
+        </div>
+    </header>
+    <div class="bg-gray-300 py-1">
+        <a href="hra" class="text-right m-5 font-light font-sans hover:text-black text-l text-sky-500">Hádání čísla</a>
+        <a href="vybaveni" class="text-right m-5 font-light font-sans hover:text-black text-l text-sky-500">Vybavení nemocnice</a>
     </div>
 </div>
 
-<div class="bg-gradient-to-b from-blue-500 to-cyan-500 h-screen">
-    <div class="m-auto w-1/2 bg-gradient-to-b from-cyan-500 to-blue-500 text-center text-2xl font-bold font-sans px-2 py-2 rounded-b-lg">Moje skvělá stránka :)</div>
+<div>
     @Body
 </div>
+
 

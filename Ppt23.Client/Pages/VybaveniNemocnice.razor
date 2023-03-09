@@ -7,30 +7,33 @@
 </head>
 
 <body class="bg-transparent">
-    <div class="m-5 rounded">
-        <div class="text-white text-size-xl font-mono bold">Pocet vybaveni: @seznamVybaveni.Count</div>
-        <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="noveVybaveni">Generovat nové vybavení</button>
-        <div class="grid grid-cols-5 auto-cols-max bg-slate-900 text-white p-2 rounded-t-lg">
-                <div>Název</div>
-                <div>Datum nákupu</div>
-                <div>Datum poslední revize</div>
-                <div>Potřebuje revizi</div>
-                <div> </div>
-        </div>
-        <div class="bg-white rounded-b-lg">
-            @foreach (var vyb in seznamVybaveni)
-                {
-                <div class="hover:bg-gray-200 grid grid-cols-5 auto-cols-max 
-                @((vyb.IsRevNeeded) ? "bg-red-600" : "")">
+    <div style="background-image:linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(https://thumbs.dreamstime.com/z/group-medical-staff-smiling-hospital-group-medical-staff-smiling-hospital-190236260.jpg)"
+         class="bg-local bg-center h-screen w-full no-repeat bg-gray-0/50">
+        <div class="mx-4 py-3 px-4">
+            <div class="text-sky-500 text-size-xl font-mono bold">Pocet vybaveni: @seznamVybaveni.Count</div>
+            <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="noveVybaveni">Generovat nové vybavení</button>
+            <div class="grid grid-cols-5 auto-cols-max bg-slate-900 text-white p-2 rounded-t-lg">
+                    <div>Název</div>
+                    <div>Datum nákupu</div>
+                    <div>Datum poslední revize</div>
+                    <div>Potřebuje revizi</div>
+                    <div> </div>
+            </div>
+            <div class="bg-white rounded-b-lg border-2 rounded-b-lg border-black border-collapse">
+                @foreach (var vyb in seznamVybaveni)
+                    {
+                    <div class="hover:bg-gray-200 grid grid-cols-5 auto-cols-max border-black border-1.5 border-collapse
+                    @((vyb.IsRevNeeded) ? "bg-red-600" : "")">
 
-                        <VybaveRow Vyb="vyb" 
-                        SmazEventCallback="() => seznamVybaveni.Remove(vyb)" 
-                        RevizeEventCallBack="() => vyb.lastRev = DateTime.Now">
+                            <VybaveRow Vyb="vyb" 
+                            SmazEventCallback="() => seznamVybaveni.Remove(vyb)" 
+                            RevizeEventCallBack="() => vyb.lastRev = DateTime.Now">
 
-                        </VybaveRow>
+                            </VybaveRow>
 
-                </div>
-                }
+                    </div>
+                    }
+            </div>
         </div>
     </div>
 </body>

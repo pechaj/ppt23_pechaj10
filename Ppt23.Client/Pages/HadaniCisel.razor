@@ -6,21 +6,24 @@
 </head>
 
 <body class="bg-transparent">
+    <div style="background-image:linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(https://thumbs.dreamstime.com/z/group-medical-staff-smiling-hospital-group-medical-staff-smiling-hospital-190236260.jpg)"
+             class="bg-local bg-center h-screen w-full no-repeat bg-gray-0/50">
+        <div style="mx-4">
+            <h1 class="font-mono text-l underline decoration-black">Hádej číslo!</h1>
 
-<h1 class="font-mono text-l underline decoration-black">Hádej číslo!</h1>
+            <input @bind-value=hadaneCislo @bind-value:event="oninput" class="border-teal-900 w-15" />
 
-<input @bind-value=hadaneCislo @bind-value:event="oninput" class="border-teal-900 w-15" />
+            <button class="border-2 bg-slate-700 text-gray-50 rounded-md px-2 py-1 mx-1 my-1 font-mono" @onclick="Hadam">Hádám</button>
+            <button class="border-2 bg-slate-700 text-gray-50 rounded-md px-2 py-1 mx-1 my-1 font-mono" @onclick="restart">Nové číslo</button>
+            <br />
 
-<button class="border-2 bg-slate-700 text-gray-50 rounded-md px-2 py-1 mx-1 my-1 font-mono" @onclick="Hadam">Hádám</button>
-<button class="border-2 bg-slate-700 text-gray-50 rounded-md px-2 py-1 mx-1 my-1 font-mono" @onclick="restart">Nové číslo</button>
-<br />
+            <span class="font-bold font-mono bg-red-200">@s</span>
 
-<span class="font-bold font-mono bg-red-200">@s</span>
+            <p class="w-auto">Číslo k uhodnutí(debug):</p>
 
-<p class="w-auto">Číslo k uhodnutí(debug):</p>
-
-<p class="italic bg-green-200 font-bold font-mono px-10 w-24">@cislo</p>
-
+            <p class="italic bg-green-200 font-bold font-mono px-10 w-24">@cislo</p>
+        </div>
+    </div>
 </body>
 @code
 {
