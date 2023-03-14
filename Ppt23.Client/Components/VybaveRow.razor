@@ -2,9 +2,9 @@
     <meta charset="utf-8" />
 </head>
 
-<div class="p-2">@Vyb.Name</div>
-<div class="p-2">@Vyb.dateBuy</div>
-<div class="p-2">@Vyb.lastRev.Year-@Vyb.lastRev.Month-@Vyb.lastRev.Day</div>
+<div class="p-2">@Vyb.NAME</div>
+<div class="p-2">@Vyb.DATEBUY</div>
+<div class="p-2">@Vyb.LASTREV.Year-@Vyb.LASTREV.Month-@Vyb.LASTREV.Day</div>
 <div class="p-2">@((Vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
 
 <div>
@@ -17,10 +17,11 @@
         Provést revizi
     </button>
 </div>
+
 @code{
-    [Parameter] public VybaveniVm? Vyb{ get; set; }
+
+    [Parameter] public VybaveniVm? Vyb { get; set; }
     [Parameter] public EventCallback SmazEventCallback { get; set; }
     [Parameter] public EventCallback RevizeEventCallBack { get; set; }
-
 
 }

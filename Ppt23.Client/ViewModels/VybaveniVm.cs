@@ -2,30 +2,17 @@
 
 public class VybaveniVm
 {
-    public string Name { get; set; }
-    public DateTime dateBuy { get; set; }
-    public DateTime lastRev { get; set; }
-    public bool IsRevNeeded { get => lastRev + new TimeSpan(1095, 0, 0, 0) < DateTime.Now; }
+    public string NAME { get; set; }
+    public DateTime DATEBUY { get; set; }
+    public DateTime LASTREV { get; set; }
+    public bool IsRevNeeded { get => LASTREV + new TimeSpan(1095, 0, 0, 0) < DateTime.Now; }
 
     public VybaveniVm()
     {
         DateTime od = new DateTime(2010, 01, 01);
-        this.Name = randName();
-        this.dateBuy = GetRandomDate(od, DateTime.Now);
-        this.lastRev = GetRandomDate(dateBuy, DateTime.Now);
-    }
-    public static List<VybaveniVm> VratRandSeznam()
-    {
-        Random rand = new Random();
-        List<VybaveniVm> list = new List<VybaveniVm>();
-
-        for(int i = 0; i < rand.Next(5, 10); i++)
-        {
-            VybaveniVm vm = new VybaveniVm();
-            list.Add(vm);
-        }
-
-        return list;
+        this.NAME = randName();
+        this.DATEBUY = GetRandomDate(od, DateTime.Now);
+        this.LASTREV = GetRandomDate(DATEBUY, DateTime.Now);
     }
     public string randName()
     {

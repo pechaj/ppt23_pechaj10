@@ -23,11 +23,11 @@
                 @foreach (var vyb in seznamVybaveni)
                     {
                     <div class="hover:bg-gray-200 grid grid-cols-5 auto-cols-max border-black border-1.5 border-collapse
-                    @((vyb.IsRevNeeded) ? "bg-red-600" : "")">
+                    @((vyb.IsRevNeeded) ? "bg-red-600 hover:bg-red-400" : "")">
 
                             <VybaveRow Vyb="vyb" 
                             SmazEventCallback="() => seznamVybaveni.Remove(vyb)" 
-                            RevizeEventCallBack="() => vyb.lastRev = DateTime.Now">
+                            RevizeEventCallBack="() => vyb.LASTREV = DateTime.Now">
 
                             </VybaveRow>
 
@@ -41,25 +41,11 @@
 @code {
     List<VybaveniVm> seznamVybaveni = new List<VybaveniVm>();
 
-    public VybaveniNemocnice()
-    {
-        seznamVybaveni = VybaveniVm.VratRandSeznam();
-    }
-
     public void noveVybaveni()
     {
-        seznamVybaveni.Clear();
-        seznamVybaveni = VybaveniVm.VratRandSeznam();
-    }
-
-    public bool needRev(VybaveniVm vyb)
-    {
-        if (vyb.IsRevNeeded)
-        {
-            return true;
+        for (int i = 0; i < 2; i++){   
+            VybaveniVm vybaveni = new VybaveniVm();
+            seznamVybaveni.Add(vybaveni);
         }
-        else return false;
     }
-
-
 }
