@@ -2,8 +2,7 @@
 @using Ppt23.Client.Components;
 
 <head>
-    <meta charset="utf-8"/>
-    <title>WIP</title>
+    <title>Vybavení nemocnice</title>
 </head>
 
 <body class="bg-transparent">
@@ -11,28 +10,28 @@
          class="bg-local bg-center h-screen w-full no-repeat bg-gray-0/50">
         <div class="mx-4 py-3 px-4">
             <div class="text-sky-500 text-size-xl font-mono bold">Pocet vybaveni: @seznamVybaveni.Count</div>
+
             <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="noveVybaveni">Generovat nové vybavení</button>
-            <div class="grid grid-cols-5 auto-cols-max bg-slate-900 text-white p-2 rounded-t-lg">
-                    <div>Název</div>
-                    <div>Datum nákupu</div>
-                    <div>Datum poslední revize</div>
-                    <div>Potřebuje revizi</div>
-                    <div> </div>
+
+            <div class="grid grid-cols-6 auto-cols-max bg-slate-900 text-white p-2 rounded-t-lg">
+
+                <div>Název</div>
+                <div>Cena</div>
+                <div>Datum nákupu</div>
+                <div>Datum poslední revize</div>
+                <div>Potřebuje revizi</div>
+                <div>Akce</div>
+
             </div>
             <div class="bg-white rounded-b-lg border-2 rounded-b-lg border-black border-collapse">
                 @foreach (var vyb in seznamVybaveni)
-                    {
-                    <div class="hover:bg-gray-200 grid grid-cols-5 auto-cols-max border-black border-1.5 border-collapse
-                    @((vyb.IsRevNeeded) ? "bg-red-600 hover:bg-red-400" : "")">
+                {
+                    <VybaveRow Vyb="vyb"
+                           SmazEventCallback="() => seznamVybaveni.Remove(vyb)"
+                           RevizeEventCallBack="() => vyb.LASTREV = DateTime.Now">
+                    </VybaveRow>
 
-                            <VybaveRow Vyb="vyb" 
-                            SmazEventCallback="() => seznamVybaveni.Remove(vyb)" 
-                            RevizeEventCallBack="() => vyb.LASTREV = DateTime.Now">
-
-                            </VybaveRow>
-
-                    </div>
-                    }
+                }
             </div>
         </div>
     </div>
@@ -43,7 +42,8 @@
 
     public void noveVybaveni()
     {
-        for (int i = 0; i < 2; i++){   
+        for (int i = 0; i < 2; i++)
+        {
             VybaveniVm vybaveni = new VybaveniVm();
             seznamVybaveni.Add(vybaveni);
         }

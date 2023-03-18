@@ -1,27 +1,114 @@
-<head>
-    <meta charset="utf-8" />
-</head>
+@using Microsoft.AspNetCore.Components.Forms
 
-<div class="p-2">@Vyb.NAME</div>
-<div class="p-2">@Vyb.DATEBUY</div>
-<div class="p-2">@Vyb.LASTREV.Year-@Vyb.LASTREV.Month-@Vyb.LASTREV.Day</div>
-<div class="p-2">@((Vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+@if (Vyb == null) return;
 
-<div>
-    <button class="rounded border-2 border-black text-black p-1 bg-red-400 hover:bg-red-600" 
-    @onclick ="() => SmazEventCallback.InvokeAsync()">
-        Smazat
-    </button>
-    <button class="rounded border-2 border-black text-black m-2 p-1 bg-sky-500 hover:bg-sky-600"
-    @onclick = "() => RevizeEventCallBack.InvokeAsync()">
-        Provést revizi
-    </button>
+<div class="hover:bg-gray-200 grid grid-cols-6 items-center border-black border-1.5 border-collapse
+                    @((Vyb.IsRevNeeded) ? "bg-red-600 hover:bg-red-400" : "")">
+    @if (Vyb != null && !Vyb.IsInEditMode)
+    {
+
+        <div class="p-2 place-content-center text-center">@Vyb.NAME</div>
+        <div class="p-2 text-center">@Vyb.CENA Kè</div>
+        <div class="p-2 text-center">@Vyb.DATEBUY.ToString("yyyy-MM-dd")</div>
+        <div class="p-2 text-center">@Vyb.LASTREV.ToString("yyyy-MM-dd")</div>
+        <div class="p-2 text-center">@((Vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+
+        <div class="grid grid-cols-3 text-sm">
+            <button class="rounded border-2 border-black text-black m-1 p-1 bg-red-400 hover:bg-red-600"
+                @onclick="() => SmazEventCallback.InvokeAsync()">
+                Smazat
+            </button>
+            <button class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-800"
+                @onclick="() => TurnOnEdit()">
+                Upravit
+            </button>
+            <button class="rounded border-2 border-black text-black m-1 p-1 bg-sky-500 hover:bg-sky-600"
+                @onclick="() => RevizeEventCallBack.InvokeAsync()">
+                Revize
+            </button>
+        </div>
+    }
+    else if (EditVyb != null && EditVyb.IsInEditMode)
+    {
+        <EditForm class="col-span-6" Model=EditVyb OnValidSubmit="() => TurnOffEdit(true)">
+            <DataAnnotationsValidator />
+            <div class="grid grid-cols-6 border-black border-1.5 ">
+
+                <div class="p-2 text-center">
+                    <InputText @bind-Value=@EditVyb.NAME />
+                    <ValidationMessage For="() => EditVyb.NAME" />
+                </div>
+
+                <div class="p-2 text-center">
+                    <InputNumber @bind-Value=@EditVyb.CENA />
+                    <ValidationMessage For="() => EditVyb.CENA" />
+                </div>
+
+                <div class="p-2 text-center">
+                    <InputDate @bind-Value=@EditVyb.DATEBUY />
+                </div>
+
+                <div class="p-2 text-center">
+                    <InputDate @bind-Value=@EditVyb.LASTREV />
+                    <ValidationMessage For="() => EditVyb.LASTREV" />
+                </div>
+
+                <div class="p-2 text-center">@((EditVyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+                <div class="text-m">
+                    <button type="submit" class="rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
+                        &#10004;
+                    </button>
+                    <button type="button" @onclick="() => TurnOffEdit(false)"
+                            class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-700">
+                        &#10006;
+                    </button>
+                </div>
+            </div>
+        </EditForm>
+    }
 </div>
 
-@code{
-
-    [Parameter] public VybaveniVm? Vyb { get; set; }
+@code {
     [Parameter] public EventCallback SmazEventCallback { get; set; }
     [Parameter] public EventCallback RevizeEventCallBack { get; set; }
+    [Parameter] public EventCallback EditDoneCallback { get; set; }
+
+    VybaveniVm? _Vyb;
+    VybaveniVm? EditVyb;
+
+    [Parameter]
+    public VybaveniVm? Vyb
+    {
+        get => _Vyb;
+        set
+        {
+            _Vyb = value;
+            if (value != null && value.IsInEditMode)
+            {
+                TurnOnEdit();
+            }
+        }
+    }
+
+    private void TurnOnEdit()
+    {
+        if (Vyb != null)
+        {
+            Vyb.IsInEditMode = true;
+            EditVyb = Vyb.Copy();
+        }
+    }
+
+    private void TurnOffEdit(bool success)
+    {
+        if (success)
+        {
+            EditVyb?.MapTo(Vyb);
+        }
+        if (Vyb is not null)
+            Vyb.IsInEditMode = false;
+        EditVyb = null;
+        EditDoneCallback.InvokeAsync(success);
+    }
 
 }
