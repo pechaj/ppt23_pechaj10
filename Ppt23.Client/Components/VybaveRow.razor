@@ -4,11 +4,14 @@
 
 @using Microsoft.AspNetCore.Components.Forms
 
-@if (Vyb == null) return;
+@{
+    if (Vyb == null && IsInEditMode)
+        TurnOnEdit();
+}
 
 <div class="hover:bg-gray-200 grid grid-cols-6 items-center border-black border-1.5 border-collapse
                     @((Vyb.IsRevNeeded) ? "bg-red-600 hover:bg-red-400" : "")">
-    @if (Vyb != null && !Vyb.IsInEditMode)
+    @if (Vyb != null && !IsInEditMode)
     {
 
         <div class="p-2 place-content-center text-center">@Vyb.NAME</div>
@@ -32,7 +35,7 @@
             </button>
         </div>
     }
-    else if (EditVyb != null && EditVyb.IsInEditMode)
+    else if (EditVyb != null && IsInEditMode)
     {
         <EditForm class="col-span-6" Model=EditVyb OnValidSubmit="() => TurnOffEdit(true)">
             <DataAnnotationsValidator />
@@ -76,6 +79,8 @@
     [Parameter] public EventCallback SmazEventCallback { get; set; }
     [Parameter] public EventCallback RevizeEventCallBack { get; set; }
     [Parameter] public EventCallback EditDoneCallback { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool IsInEditMode { get; set; }
 
     VybaveniVm? _Vyb;
     VybaveniVm? EditVyb;
@@ -87,7 +92,7 @@
         set
         {
             _Vyb = value;
-            if (value != null && value.IsInEditMode)
+            if (value != null && IsInEditMode)
             {
                 TurnOnEdit();
             }
@@ -98,7 +103,7 @@
     {
         if (Vyb != null)
         {
-            Vyb.IsInEditMode = true;
+            IsInEditMode = true;
             EditVyb = Vyb.Copy();
         }
     }
@@ -110,7 +115,7 @@
             EditVyb?.MapTo(Vyb);
         }
         if (Vyb is not null)
-            Vyb.IsInEditMode = false;
+            IsInEditMode = false;
         EditVyb = null;
         EditDoneCallback.InvokeAsync(success);
     }

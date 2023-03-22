@@ -12,6 +12,20 @@
             <div class="text-sky-500 text-size-xl font-mono bold">Pocet vybaveni: @seznamVybaveni.Count</div>
 
             <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="noveVybaveni">Generovat nové vybavení</button>
+            <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="() => isInNewMode = true">
+                Nový záznam
+            </button>
+
+            @if (isInNewMode)
+            {
+                ArgumentNullException.ThrowIfNull(newModel);
+
+                <VybaveRow IsInEditMode=true Vyb="newModel"
+                       EditDoneCallback="() => {seznamVybaveni.Insert(0,newModel); isInNewMode = false;}">
+                    <button type="submit" class="bg-teal-500">Přidej</button>
+                    <button type="button" @onclick="() => isInNewMode = false" class="bg-yellow-500">Zrušit</button>
+                </VybaveRow>
+            }
 
             <div class="grid grid-cols-6 auto-cols-max bg-slate-900 text-white p-2 rounded-t-lg">
 
@@ -23,6 +37,8 @@
                 <div>Akce</div>
 
             </div>
+
+
             <div class="bg-white rounded-b-lg border-2 rounded-b-lg border-black border-collapse">
                 @foreach (var vyb in seznamVybaveni)
                 {
@@ -39,6 +55,8 @@
 
 @code {
     List<VybaveniVm> seznamVybaveni = new List<VybaveniVm>();
+    VybaveniVm newModel = new VybaveniVm();
+    bool isInNewMode;
 
     public void noveVybaveni()
     {
