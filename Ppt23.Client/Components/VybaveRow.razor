@@ -5,12 +5,14 @@
 @using Microsoft.AspNetCore.Components.Forms
 
 @{
-    if (Vyb == null && IsInEditMode)
+    @if (Vyb == null && IsInEditMode)
         TurnOnEdit();
+
 }
 
 <div class="hover:bg-gray-200 grid grid-cols-6 items-center border-black border-1.5 border-collapse
-                    @((Vyb.IsRevNeeded) ? "bg-red-600 hover:bg-red-400" : "")">
+                    @((Vyb.IsRevNeeded) ? "bg-red-600 hover:bg-red-300" : "")">
+
     @if (Vyb != null && !IsInEditMode)
     {
 
@@ -21,11 +23,11 @@
         <div class="p-2 text-center">@((Vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
 
         <div class="grid grid-cols-3 text-sm">
-            <button class="rounded border-2 border-black text-black m-1 p-1 bg-red-400 hover:bg-red-600"
+            <button class="rounded border-2 border-black text-black m-1 p-1 bg-red-500 hover:bg-red-600"
                 @onclick="() => SmazEventCallback.InvokeAsync()">
                 Smazat
             </button>
-            <button class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-800"
+            <button class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-400"
                 @onclick="() => TurnOnEdit()">
                 Upravit
             </button>
@@ -59,17 +61,24 @@
                     <InputDate @bind-Value=@EditVyb.LASTREV />
                     <ValidationMessage For="() => EditVyb.LASTREV" />
                 </div>
-
                 <div class="p-2 text-center">@((EditVyb.IsRevNeeded) ? "Ano" : "Ne")</div>
-                <div class="text-m">
-                    <button type="submit" class="rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
-                        &#10004;
-                    </button>
-                    <button type="button" @onclick="() => TurnOffEdit(false)"
-                            class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-700">
-                        &#10006;
-                    </button>
-                </div>
+
+                @if (ChildContent == null)
+                {
+                    <div class="text-m">
+                        <button type="submit" class="rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
+                            &#10004;
+                        </button>
+                        <button type="button" @onclick="() => TurnOffEdit(false)"
+                                class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-700">
+                            &#10006;
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    @ChildContent
+                }
             </div>
         </EditForm>
     }
