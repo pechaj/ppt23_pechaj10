@@ -1,4 +1,5 @@
 using Ppt23.Shared;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,9 +47,25 @@ app.MapDelete("/vybaveni/{Id}", (Guid Id) =>
 }
 );
 
-app.MapPut("/vybaveni", (VybaveniVm upravenyModel, Guid Id) =>
+app.MapPut("/vybaveni/{Id}", (VybaveniVm? upravenyModel, Guid Id) =>
 {
-    seznamVybaveni.Insert(0, upravenyModel);
+    var vybranyModel = seznamVybaveni.SingleOrDefault(x => x.Id == Id);
+    if (vybranyModel == null)
+    {
+        return Results.NotFound("This item cannot be found!");
+    }
+    else
+    {
+        upravenyModel.Id = Id;
+        int index = seznamVybaveni.IndexOf(vybranyModel);
+        seznamVybaveni.Remove(vybranyModel);
+        seznamVybaveni.Insert(index, upravenyModel);
+        return Results.Ok();
+    }
+    //upravenyModel = seznamVybaveni.SingleOrDefault(x => x.Id == Id);
+    //int index = seznamVybaveni.IndexOf(upravenyModel);
+    //seznamVybaveni.Remove(upravenyModel);
+    //seznamVybaveni.Insert(index, upravenyModel);
 });
 
 app.MapGet("/vybaveni/{Id}", (Guid Id) =>
