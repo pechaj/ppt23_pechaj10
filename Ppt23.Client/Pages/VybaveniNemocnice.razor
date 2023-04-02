@@ -1,19 +1,26 @@
 ﻿@page "/vybaveni"
 @using Ppt23.Client.Components;
+@inject HttpClient Http
 
 <head>
     <title>Vybavení nemocnice</title>
     <meta charset="utf-8" />
 </head>
-
+@if (seznamVybaveni is null)
+{
+    <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
+        <div class=" border-t-transparent border-solid animate-spin  rounded-full border-teal-600 border-8 h-16 w-16"></div>
+    </div>
+    return;
+}
 <body style="background-image:linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(https://c1.wallpaperflare.com/preview/343/704/60/scissors-surgery-operating-room-emergency.jpg)"
       class="bg-cover bg-no-repeat h-screen">
+    
     <div>
         <div class="mx-4 py-3 px-4">
-            <div class="text-sky-500 text-size-xl font-mono bold">Pocet vybaveni: @seznamVybaveni.Count</div>
 
-            <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="noveVybaveni">Generovat nové vybavení</button>
-            <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="() => {isInNewMode = true; newModel = new();}">
+            <button class="rounded bg-green-100 bold text-size-xl p-2 m-2">Generovat nové vybavení</button>
+            <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="() => {newModel = new VybaveniVm(); isInNewMode = true;}">
                 Nový záznam
             </button>
 
@@ -30,14 +37,13 @@
 
 
             <div class="bg-white rounded-b-lg border-2 rounded-b-lg border-black border-collapse">
+
                 @if (isInNewMode)
                 {
                     ArgumentNullException.ThrowIfNull(newModel);
 
                     <VybaveRow IsInEditMode=true Vyb="newModel"
-                           EditDoneCallback="() => {seznamVybaveni.Insert(0,newModel);
-                                                    isInNewMode = false;
-                                                    newModel.LASTREV = DateTime.Now;}"> @*Dnesni datum se prida az po potvrzeni*@
+                           EditDoneCallback="() => novaVybava(newModel)">
 
                         <div class="grid grid-cols-2 p-1">
                             <button type="submit" class="w-auto h-auto rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
@@ -53,8 +59,9 @@
                 @foreach (var vyb in seznamVybaveni)
                 {
                     <VybaveRow Vyb="vyb"
-                           SmazEventCallback="() => seznamVybaveni.Remove(vyb)"
-                           RevizeEventCallBack="() => vyb.LASTREV = DateTime.Now">
+                           SmazEventCallback="() => smazVybaveni(vyb)"
+                           RevizeEventCallBack="async () =>{vyb.LASTREV = DateTime.Now; await upravitVybaveni(vyb);}"
+                           EditDoneCallback="async () => await upravitVybaveni(vyb)">
                     </VybaveRow>
 
                 }
@@ -64,16 +71,62 @@
 </body>
 
 @code {
-    List<VybaveniVm> seznamVybaveni = new List<VybaveniVm>();
-    VybaveniVm newModel = new VybaveniVm();
+    List<VybaveniVm>? seznamVybaveni;
+    VybaveniVm? newModel;
     bool isInNewMode;
 
-    public void noveVybaveni()
+    //public void noveVybaveni()
+    //{
+    //    VybaveniVm vybaveni = new VybaveniVm();
+    //    seznamVybaveni.Add(vybaveni);
+    //}
+
+    public async Task novaVybava(VybaveniVm newEquipment)
     {
-        for (int i = 0; i < 2; i++)
+
+        var response = await Http.PostAsJsonAsync<VybaveniVm>("vybaveni", newEquipment);
+
+        if (response.IsSuccessStatusCode)
         {
-            VybaveniVm vybaveni = new VybaveniVm();
-            seznamVybaveni.Add(vybaveni);
+
+            VybaveniVm? equip = await response.Content.ReadFromJsonAsync<VybaveniVm>();
+
+            if (equip != null)
+            {
+                newEquipment.Id = equip.Id;
+                equip.LASTREV = DateTime.Now;
+                seznamVybaveni.Insert(0, newEquipment);
+                isInNewMode = false;
+
+            }
         }
+    }
+
+    public async Task upravitVybaveni(VybaveniVm? vyb)
+    {
+        var response = await Http.PutAsJsonAsync($"vybaveni/{vyb.Id}", vyb);
+
+    }
+
+    public async Task smazVybaveni(VybaveniVm vyb)
+    {
+        var response = await Http.DeleteAsync(String.Format("vybaveni/{0}", vyb.Id));
+        if (response.IsSuccessStatusCode)
+        {
+            seznamVybaveni.Remove(vyb);
+        }
+
+        if (response.IsSuccessStatusCode && seznamVybaveni != null)
+        {
+            seznamVybaveni.Remove(vyb);
+            //"Úspěšně smazáno"
+        }
+        //"Smazání se nezdařilo";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(2000);
+        seznamVybaveni = await Http.GetFromJsonAsync<List<VybaveniVm>>("/vybaveni");
     }
 }

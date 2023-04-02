@@ -6,8 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
+    policy.WithOrigins("https://localhost:1111")
+    .WithMethods("GET", "POST", "DELETE", "PUT")
+    .AllowAnyHeader()
+));
 
 var app = builder.Build();
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -20,13 +26,7 @@ app.UseHttpsRedirection();
 List<VybaveniVm> seznamVybaveni = new List<VybaveniVm>();
 
 
-app.MapGet("/vybaveni", () =>
-    {
-        VybaveniVm vybaveni = new VybaveniVm();
-        seznamVybaveni.Add(vybaveni);
-
-        return seznamVybaveni;
-    }).WithOpenApi();
+app.MapGet("/vybaveni", () => seznamVybaveni);
 
 app.MapPost("/vybaveni", (VybaveniVm prichoziModel) =>
 {
@@ -48,7 +48,7 @@ app.MapDelete("/vybaveni/{Id}", (Guid Id) =>
 app.MapPut("/vybaveni/{Id}", (VybaveniVm? upravenyModel, Guid Id) =>
 {
     var vybranyModel = seznamVybaveni.SingleOrDefault(x => x.Id == Id);
-    if (vybranyModel == null)
+    if (vybranyModel == null || upravenyModel == null)
     {
         return Results.NotFound("This item cannot be found!");
     }
@@ -61,7 +61,7 @@ app.MapPut("/vybaveni/{Id}", (VybaveniVm? upravenyModel, Guid Id) =>
         seznamVybaveni.Remove(vybranyModel);
         seznamVybaveni.Insert(index, upravenyModel);
 
-        return Results.Ok();
+        return Results.Ok(upravenyModel);
     }
 });
 

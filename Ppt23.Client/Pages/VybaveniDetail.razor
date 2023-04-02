@@ -1,0 +1,48 @@
+﻿@page "/vybaveni/{Id:guid}"
+@inject HttpClient Http
+@using Ppt23.Shared
+
+@if (vyb is null)
+{
+    return;
+}
+
+<head>
+    <title>@vyb.NAME</title>
+</head>
+
+
+
+<h1 class="font-bold">Detail vybaveni: <span class="text-emerald-600 font-light">@vyb.NAME</span></h1>
+
+<div class="grid grid-cols-2 gap-x-1 flex flex-row">
+    <div class="basis-1/4 font-bold text-m">Název:</div>
+    <div class="basis-1/4 text-m">@vyb.NAME</div>
+
+    <div class="basis-1/4 font-bold text-m">ID:</div>
+    <div class="basis-1/4 text-m">@vyb.Id</div>
+
+    <div class="font-bold text-m">Cena</div>
+    <div class="text-m">@vyb.CENA Kč</div>
+
+    <div class="font-bold text-m">Datum nákupu:</div>
+    <div class="text-m">@vyb.DATEBUY</div>
+
+    <div class="font-bold text-m">Datum poslední revize</div>
+    <div class="text-m">@vyb.LASTREV</div>
+
+    <div class="font-bold text-m">Potřebuje revizi?</div>
+    <div class="text-m">@((vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    VybaveniVm? vyb;
+    bool IsInEditMode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+        vyb = await Http.GetFromJsonAsync<VybaveniVm>($"vybaveni/{Id}");
+    }
+}
