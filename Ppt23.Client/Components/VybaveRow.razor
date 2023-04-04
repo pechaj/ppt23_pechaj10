@@ -125,7 +125,7 @@
 
         IsInEditMode = false;
         EditVyb?.MapTo(Vyb);
-        await EditDoneCallback.InvokeAsync();
+        await EditDoneCallback.InvokeAsync(Vyb);
     }
 
 }

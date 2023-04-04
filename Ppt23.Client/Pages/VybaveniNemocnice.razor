@@ -43,7 +43,7 @@
                     ArgumentNullException.ThrowIfNull(newModel);
 
                     <VybaveRow IsInEditMode=true Vyb="newModel"
-                           EditDoneCallback="() => novaVybava(newModel)">
+                           EditDoneCallback="() => {novaVybava(newModel); isInNewMode = false;}">
 
                         <div class="grid grid-cols-2 p-1">
                             <button type="submit" class="w-auto h-auto rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
@@ -59,9 +59,9 @@
                 @foreach (var vyb in seznamVybaveni)
                 {
                     <VybaveRow Vyb="vyb"
-                           SmazEventCallback="() => smazVybaveni(vyb)"
+                           SmazEventCallback="async () => await smazVybaveni(vyb)"
                            RevizeEventCallBack="async () =>{vyb.LASTREV = DateTime.Now; await upravitVybaveni(vyb);}"
-                           EditDoneCallback="async () => await upravitVybaveni(vyb)">
+                           EditDoneCallback="async (vyb) => await upravitVybaveni(vyb)">
                     </VybaveRow>
 
                 }
@@ -83,26 +83,17 @@
 
     public async Task novaVybava(VybaveniVm newEquipment)
     {
-
+        newEquipment.LASTREV = DateTime.Now;
         var response = await Http.PostAsJsonAsync<VybaveniVm>("vybaveni", newEquipment);
 
         if (response.IsSuccessStatusCode)
         {
-
-            VybaveniVm? equip = await response.Content.ReadFromJsonAsync<VybaveniVm>();
-
-            if (equip != null)
-            {
-                newEquipment.Id = equip.Id;
-                equip.LASTREV = DateTime.Now;
-                seznamVybaveni.Insert(0, newEquipment);
-                isInNewMode = false;
-
-            }
+            seznamVybaveni = await Http.GetFromJsonAsync<List<VybaveniVm>>("/vybaveni");
+            StateHasChanged();
         }
     }
 
-    public async Task upravitVybaveni(VybaveniVm? vyb)
+    public async Task upravitVybaveni(VybaveniVm vyb)
     {
         var response = await Http.PutAsJsonAsync($"vybaveni/{vyb.Id}", vyb);
 
@@ -111,10 +102,6 @@
     public async Task smazVybaveni(VybaveniVm vyb)
     {
         var response = await Http.DeleteAsync(String.Format("vybaveni/{0}", vyb.Id));
-        if (response.IsSuccessStatusCode)
-        {
-            seznamVybaveni.Remove(vyb);
-        }
 
         if (response.IsSuccessStatusCode && seznamVybaveni != null)
         {
@@ -128,5 +115,10 @@
     {
         await Task.Delay(2000);
         seznamVybaveni = await Http.GetFromJsonAsync<List<VybaveniVm>>("/vybaveni");
+
+        if(seznamVybaveni is null)
+        {
+            return;
+        }
     }
 }

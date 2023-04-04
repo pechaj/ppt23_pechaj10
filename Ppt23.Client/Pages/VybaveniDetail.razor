@@ -1,12 +1,14 @@
 ﻿@page "/vybaveni/{Id:guid}"
 @inject HttpClient Http
+@using Microsoft.AspNetCore.Components.Forms
 @using Ppt23.Shared
-
 @if (vyb is null)
 {
+    <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
+        <div class=" border-t-transparent border-solid animate-spin  rounded-full border-teal-600 border-8 h-16 w-16"></div>
+    </div>
     return;
 }
-
 <head>
     <title>@vyb.NAME</title>
 </head>
@@ -14,35 +16,108 @@
 
 
 <h1 class="font-bold">Detail vybaveni: <span class="text-emerald-600 font-light">@vyb.NAME</span></h1>
+@if (!IsInEditMode)
+{
+    <div class="grid grid-cols-2 gap-x-1">
+        <div class="basis-1/4 font-bold text-m">Název:</div>
+        <div class="basis-1/4 text-m">@vyb.NAME</div>
 
-<div class="grid grid-cols-2 gap-x-1 flex flex-row">
-    <div class="basis-1/4 font-bold text-m">Název:</div>
-    <div class="basis-1/4 text-m">@vyb.NAME</div>
+        <div class="basis-1/4 font-bold text-m">ID:</div>
+        <div class="basis-1/4 text-m">@vyb.Id</div>
 
-    <div class="basis-1/4 font-bold text-m">ID:</div>
-    <div class="basis-1/4 text-m">@vyb.Id</div>
+        <div class="font-bold text-m">Cena</div>
+        <div class="text-m">@vyb.CENA Kč</div>
 
-    <div class="font-bold text-m">Cena</div>
-    <div class="text-m">@vyb.CENA Kč</div>
+        <div class="font-bold text-m">Datum nákupu:</div>
+        <div class="text-m">@vyb.DATEBUY</div>
 
-    <div class="font-bold text-m">Datum nákupu:</div>
-    <div class="text-m">@vyb.DATEBUY</div>
+        <div class="font-bold text-m">Datum poslední revize</div>
+        <div class="text-m">@vyb.LASTREV</div>
 
-    <div class="font-bold text-m">Datum poslední revize</div>
-    <div class="text-m">@vyb.LASTREV</div>
+        <div class="font-bold text-m">Potřebuje revizi?</div>
+        <div class="text-m">@((vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+    </div>
+    <button class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-400"
+        @onclick="() => TurnOnEdit()">
+        Upravit
+    </button>
+}
+else if (EditVyb is not null)
+{
+    <div class="grid grid-cols-2 gap-x-1">
+        <EditForm class="col-span-2" Model=EditVyb OnValidSubmit="() => Submit()">
+            <DataAnnotationsValidator />
+            <div class="basis-1/4 font-bold text-m">Název:</div>
+            <div class="basis-1/4 text-m">
+                <InputText @bind-Value=@EditVyb.NAME />
+                <ValidationMessage For="() => EditVyb.NAME" />
+            </div>
 
-    <div class="font-bold text-m">Potřebuje revizi?</div>
-    <div class="text-m">@((vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
-</div>
+            <div class="basis-1/4 font-bold text-m">ID:</div>
+            <div class="basis-1/4 text-m">@vyb.Id</div>
+
+            <div class="font-bold text-m">Cena</div>
+            <div class="text-m">
+                <InputNumber @bind-Value=@EditVyb.CENA />
+                <ValidationMessage For="() => EditVyb.CENA" />
+            </div>
+
+            <div class="font-bold text-m">Datum nákupu:</div>
+            <div class="text-m">
+                <InputDate @bind-Value=@EditVyb.DATEBUY />
+            </div>
+
+            <div class="font-bold text-m">Datum poslední revize</div>
+            <div class="text-m">
+                <InputDate @bind-Value=@EditVyb.LASTREV />
+                <ValidationMessage For="() => EditVyb.LASTREV" />
+            </div>
+
+            <div class="font-bold text-m">Potřebuje revizi?</div>
+            <div class="text-m">@((vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+        
+        <div class="text-m">
+            <button type="submit" class="rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
+                &#10004;
+            </button>
+            <button type="button" @onclick="() => IsInEditMode = false"
+                    class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-700">
+                &#10006;
+            </button>
+        </div>
+        </EditForm>
+
+    </div>
+}
+
 
 @code {
     [Parameter] public Guid Id { get; set; }
     VybaveniVm? vyb;
+    VybaveniVm? EditVyb;
     bool IsInEditMode;
+
+    private void TurnOnEdit()
+    {
+        if (vyb != null)
+        {
+            IsInEditMode = true;
+            EditVyb = vyb.Copy();
+        }
+    }
+    private async Task Submit()
+    {
+        ArgumentNullException.ThrowIfNull(vyb);
+
+        IsInEditMode = false;
+        EditVyb?.MapTo(vyb);
+
+        var response = await Http.PutAsJsonAsync($"vybaveni/{vyb.Id}", vyb);
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(500);
+        await Task.Delay(100);
         vyb = await Http.GetFromJsonAsync<VybaveniVm>($"vybaveni/{Id}");
     }
 }
