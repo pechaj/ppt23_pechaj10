@@ -3,13 +3,19 @@
 @using Ppt23.Shared
 
 
-<h1 style="text-emerald-600">Příkaz: @prikaz</h1>
+<h1>Příkaz: <span class="text-emerald-600">@prikaz</span></h1>
 <input @bind-value=hledanyString @bind-value:event="oninput" class="border-teal-900 w-15" />
 
 <button class="rounded border-1 border-black text-black m-1 p-1 bg-green-500 hover:bg-yellow-400"
         @onclick="() => Search()">
     Vyhledat
 </button>
+
+@if(seznam is null)
+{
+    return;
+}
+
 @foreach(var nalez in seznam)
 {
     <div>Id: @nalez.Id  Nazev: @nalez.Name</div>
@@ -18,7 +24,7 @@
 @code {
     [Parameter] public string? prikaz { get; set; }
     string? hledanyString;
-    List<RevizeViewModel> seznam = null!;
+    List<RevizeViewModel> seznam = new List<RevizeViewModel>();
 
 
     private async Task Search()
