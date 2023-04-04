@@ -25,6 +25,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 List<VybaveniVm> seznamVybaveni = new List<VybaveniVm>();
 
+for(int i = 0; i < 5; i++)
+{
+    seznamVybaveni.Clear();
+    seznamVybaveni.Add(new VybaveniVm());
+}
+
 
 app.MapGet("/vybaveni", () => seznamVybaveni);
 
@@ -69,6 +75,22 @@ app.MapGet("/vybaveni/{Id}", (Guid Id) =>
 {
     VybaveniVm? hledany = seznamVybaveni.SingleOrDefault(x => x.Id == Id);
     return hledany;
+});
+
+app.MapGet("/vybaveni/{String}", (string hledanystring) =>
+{
+    List<RevizeViewModel> seznam = new List<RevizeViewModel>();
+    
+    for (int i = 0; i < seznamVybaveni.Count(); i++)
+    {
+        if (seznamVybaveni[i].NAME.Contains(hledanystring))
+        {
+            RevizeViewModel nalezen = new RevizeViewModel();
+            nalezen.Id = seznamVybaveni[i].Id;
+            nalezen.Name = seznamVybaveni[i].NAME;
+        }
+    }
+    return seznam;
 });
 
 

@@ -1,0 +1,30 @@
+﻿@page "/revize/{prikaz}"
+@inject HttpClient Http
+@using Ppt23.Shared
+
+
+<h1 style="text-emerald-600">Příkaz: @prikaz</h1>
+<input @bind-value=hledanyString @bind-value:event="oninput" class="border-teal-900 w-15" />
+
+<button class="rounded border-1 border-black text-black m-1 p-1 bg-green-500 hover:bg-yellow-400"
+        @onclick="() => Search()">
+    Vyhledat
+</button>
+@foreach(var nalez in seznam)
+{
+    <div>Id: @nalez.Id  Nazev: @nalez.Name</div>
+}
+
+@code {
+    [Parameter] public string? prikaz { get; set; }
+    string? hledanyString;
+    List<RevizeViewModel> seznam = null!;
+
+
+    private async Task Search()
+    {
+
+        seznam = await Http.GetFromJsonAsync<List<RevizeViewModel>>($"vybaveni/{hledanyString}");
+    }
+
+}
