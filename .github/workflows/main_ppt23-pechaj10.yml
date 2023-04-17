@@ -1,15 +1,15 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - ppt23-pechaj10
+name: Build and deploy ASP.Net Core app to Azure Web App - ppt23-tesy
 
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
-  env:
-    PUBLISH_DIR: vystup
+env: #proměnné, které můžeme používat dále pomocí env.PUBLISH_DIR
+  PUBLISH_DIR: vystup #výstupní složka kam se vybuildí aplikace (tuhle složku to vytvoří, na názvu nezáleží)
 
 jobs:
   build:
@@ -24,17 +24,15 @@ jobs:
           dotnet-version: '7.x'
           include-prerelease: true
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      - name: Publish with dotnet #do určené složky publikuje aplikace, v release configuraci
+        run: dotnet publish  /Ppt23.API/Ppt23.API.csproj --configuration Release --output ${{env.PUBLISH_DIR}}
 
-      - name: dotnet publish
-        run: dotnet publish /Ppt23.API/Ppt23.API.csproj --configuration Release --output ${{env.PUBLISH_DIR}}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.PUBLISH_DIR}}
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,7 +51,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'ppt23-pechaj10'
+          app-name: 'ppt23-tesy'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7EA019E389B94C7EB3799D3391F418DA }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_149216E4ABF7441EBDB923AB95194FB0 }}
           package: .
