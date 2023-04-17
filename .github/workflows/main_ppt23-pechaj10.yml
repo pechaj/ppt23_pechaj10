@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - ppt23-pechaj10
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 env: #proměnné, které můžeme používat dále pomocí env.PUBLISH_DIR
   PUBLISH_DIR: vystup #výstupní složka kam se vybuildí aplikace (tuhle složku to vytvoří, na názvu nezáleží)
