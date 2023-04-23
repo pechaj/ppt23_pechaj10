@@ -1,13 +1,15 @@
 using Ppt23.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
+var corsAllowedOrigin = builder.Configuration.GetSection("CorsAllowedOrigins").Get<string[]>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
-    policy.WithOrigins("https://localhost:1111")
+    policy.WithOrigins(corsAllowedOrigin)
     .WithMethods("GET", "POST", "DELETE", "PUT")
     .AllowAnyHeader()
 ));
