@@ -1,3 +1,6 @@
+using Mapster;
+using Microsoft.EntityFrameworkCore;
+using Ppt23.API.Data;
 using Ppt23.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +10,7 @@ var corsAllowedOrigin = builder.Configuration.GetSection("CorsAllowedOrigins").G
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite("FileName=database.db"));
 
 builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
     policy.WithOrigins(corsAllowedOrigin)
@@ -25,75 +29,93 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-List<VybaveniVm> seznamVybaveni = new List<VybaveniVm>();
-seznamVybaveni.Clear();
 
-for(int i = 0; i < 5; i++)
+// Get seznamu
+app.MapGet("/vybaveni", (PptDbContext _db) =>
 {
-    
-    seznamVybaveni.Add(new VybaveniVm());
-}
 
-
-app.MapGet("/vybaveni", () => seznamVybaveni);
-
-app.MapPost("/vybaveni", (VybaveniVm prichoziModel) =>
-{
-    Guid newId = Guid.NewGuid();
-    prichoziModel.Id = newId;
-    seznamVybaveni.Insert(0, prichoziModel);
+    Console.WriteLine($"Pocet vybaveni v db: {_db.Vybavenis.Count()}");
+    return _db.Vybavenis;
 });
 
-app.MapDelete("/vybaveni/{Id}", (Guid Id) =>
+// Novy item v seznamu
+app.MapPost("/vybaveni", (VybaveniVm prichoziModel, PptDbContext _db) =>
 {
-    var item = seznamVybaveni.SingleOrDefault(x => x.Id == Id);
+
+    prichoziModel.Id = Guid.Empty;
+    var en = prichoziModel.Adapt<Vybaveni>();
+
+    _db.Vybavenis.Add(en);
+    _db.SaveChanges();
+
+    return prichoziModel.Id;
+});
+
+// Smazani zaznamu v seznamu
+app.MapDelete("/vybaveni/{Id}", (Guid Id, PptDbContext _db) =>
+{
+    var item = _db.Vybavenis.SingleOrDefault(x => x.Id == Id);
+
     if (item == null)
         return Results.NotFound("Tato položka nebyla nalezena!!");
-    seznamVybaveni.Remove(item);
+
+    _db.Vybavenis.Remove(item);
+    _db.SaveChanges();
+
     return Results.Ok();
 }
 );
 
-app.MapPut("/vybaveni/{Id}", (VybaveniVm? upravenyModel, Guid Id) =>
+// Uprava itemu v seznamu
+app.MapPut("/vybaveni/{Id}", (Vybaveni en, Guid Id, PptDbContext _db) =>
 {
-    var vybranyModel = seznamVybaveni.SingleOrDefault(x => x.Id == Id);
-    if (vybranyModel == null || upravenyModel == null)
+    var vybranyModel = _db.Vybavenis.SingleOrDefault(x => x.Id == Id);
+    if (vybranyModel == null)
     {
         return Results.NotFound("This item cannot be found!");
     }
 
     else
     {
-        upravenyModel.Id = Id;
-        int index = seznamVybaveni.IndexOf(vybranyModel);
+        en.Id = Id;
 
-        seznamVybaveni.Remove(vybranyModel);
-        seznamVybaveni.Insert(index, upravenyModel);
-
-        return Results.Ok(upravenyModel);
+        _db.Vybavenis.Entry(vybranyModel).CurrentValues.SetValues(en);
+        _db.SaveChanges();
+        return Results.Ok();
     }
 });
 
-//app.MapGet("/vybaveni/{Id}", (Guid Id) =>
+// Vyhledani urciteho itemu podle ID, nefunkcni, triska se to s tim vyhledavanim ve spodni metode
+//app.MapGet("/vybaveni/{Id}", (Guid Id, PptDbContext _db) =>
 //{
-//    VybaveniVm? hledany = seznamVybaveni.SingleOrDefault(x => x.Id == Id);
+//    Vybaveni? hledany = _db.Vybavenis.SingleOrDefault(x => x.Id == Id);
 //    return hledany;
 //});
 
-app.MapGet("/vybaveni/{x}", (string x) =>
+// Vyhledani vsech itemu podle retezce v nazvu
+app.MapGet("/vybaveni/{x}", (string x, PptDbContext _db) =>
 {
     List<RevizeViewModel> seznam = new List<RevizeViewModel>();
-    
-    for (int i = 0; i < seznamVybaveni.Count(); i++)
+
+    for (int i = 0; i < _db.Vybavenis.Count(); i++)
     {
-        if (seznamVybaveni[i].NAME.Contains(x))
-        {
-            RevizeViewModel nalezen = new RevizeViewModel();
-            nalezen.Id = seznamVybaveni[i].Id;
-            nalezen.Name = seznamVybaveni[i].NAME;
-            seznam.Add(nalezen);
+
+        var vybavenisAsList = _db.Vybavenis.ToList();
+
+        if (vybavenisAsList.ElementAt(i).NAME.Contains(x))
+            {
+
+                RevizeViewModel nalezen = new RevizeViewModel();
+
+                nalezen.Id = vybavenisAsList.ElementAt(i).Id;
+                nalezen.Name = vybavenisAsList.ElementAt(i).NAME;
+                
+                var en = nalezen.Adapt<Revize>();
+                seznam.Add(nalezen);
+                _db.Revizes.Add(en);
+            }
         }
-    }
+    _db.SaveChanges();
     return seznam;
 });
 

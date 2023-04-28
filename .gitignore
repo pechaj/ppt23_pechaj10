@@ -35,3 +35,6 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+/Ppt23.API/database.db
+/Ppt23.API/database.db-shm
+/Ppt23.API/database.db-wal
