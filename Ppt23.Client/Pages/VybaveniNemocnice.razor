@@ -6,6 +6,7 @@
     <title>Vybavení nemocnice</title>
     <meta charset="utf-8" />
 </head>
+
 @if (seznamVybaveni is null)
 {
     <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
@@ -13,9 +14,10 @@
     </div>
     return;
 }
+
 <body style="background-image:linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(https://c1.wallpaperflare.com/preview/343/704/60/scissors-surgery-operating-room-emergency.jpg)"
       class="bg-cover bg-no-repeat h-screen">
-    
+
     <div>
         <div class="mx-4 py-3 px-4">
 
@@ -23,6 +25,7 @@
             <button class="rounded bg-green-500 bold text-size-xl p-2 m-2" @onclick="() => {newModel = new VybaveniVm(); isInNewMode = true;}">
                 Nový záznam
             </button>
+            <button class="rounded bg-slate-900 p-2 m-2 float-right" @onclick="async () => await OnInitializedAsync()">♾️</button>
 
             <div class="grid grid-cols-6 auto-cols-max bg-slate-900 text-white p-2 rounded-t-lg text-center">
 
@@ -37,9 +40,11 @@
 
 
             <div class="bg-white rounded-b-lg border-2 rounded-b-lg border-black border-collapse">
+                
 
                 @if (isInNewMode)
                 {
+
                     ArgumentNullException.ThrowIfNull(newModel);
 
                     <VybaveRow IsInEditMode=true Vyb="newModel"
@@ -107,7 +112,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(2000);
+        seznamVybaveni = null;
+
+        await Task.Delay(1000);
         seznamVybaveni = await Http.GetFromJsonAsync<List<VybaveniVm>>("/vybaveni");
 
         if(seznamVybaveni is null)

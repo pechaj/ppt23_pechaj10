@@ -18,8 +18,4 @@
     <ProjectReference Include="..\Ppt23.Shared\Ppt23.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
 </Project>
