@@ -5,7 +5,12 @@ using Ppt23.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 var corsAllowedOrigin = builder.Configuration.GetSection("CorsAllowedOrigins").Get<string[]>();
-string dbPath = builder.Configuration.GetValue<string>("sqliteDbPath");
+string dbPath = builder.Configuration.GetValue<string>("dbPath");
+
+if(dbPath == null)
+{
+    throw new ArgumentNullException(nameof(dbPath));
+}
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
