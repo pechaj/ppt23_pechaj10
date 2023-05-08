@@ -5,12 +5,13 @@ using Ppt23.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 var corsAllowedOrigin = builder.Configuration.GetSection("CorsAllowedOrigins").Get<string[]>();
+string dbPath = builder.Configuration.GetValue<string>("sqliteDbPath");
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite("FileName=database.db"));
+builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite($"FileName={dbPath}"));
 
 builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
     policy.WithOrigins(corsAllowedOrigin)
@@ -20,6 +21,10 @@ builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
 
 var app = builder.Build();
 app.UseCors();
+
+app.Services.CreateScope().ServiceProvider
+  .GetRequiredService<PptDbContext>()
+  .Database.Migrate();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -85,14 +90,6 @@ app.MapPut("/vybaveni/{Id}", (Vybaveni en, Guid Id, PptDbContext _db) =>
     }
 });
 
-// Vyhledani urciteho itemu podle ID, nefunkcni, triska se to s tim vyhledavanim ve spodni metode
-//app.MapGet("/vybaveni/{Id}", (Guid Id, PptDbContext _db) =>
-//{
-//    Vybaveni? hledany = _db.Vybavenis.SingleOrDefault(x => x.Id == Id);
-//    return hledany;
-//});
-
-// Vyhledani vsech itemu podle retezce v nazvu
 app.MapGet("/vybaveni/{x}", (string x, PptDbContext _db) =>
 {
     List<RevizeViewModel> seznam = new List<RevizeViewModel>();
