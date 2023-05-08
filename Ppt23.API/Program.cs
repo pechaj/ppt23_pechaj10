@@ -35,7 +35,7 @@ app.MapGet("/vybaveni", (PptDbContext _db) =>
 {
 
     Console.WriteLine($"Pocet vybaveni v db: {_db.Vybavenis.Count()}");
-    return _db.Vybavenis;
+    return _db.Vybavenis.ToList();
 });
 
 // Novy item v seznamu
