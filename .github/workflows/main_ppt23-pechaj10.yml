@@ -23,7 +23,9 @@ jobs:
         with:
           dotnet-version: '7.x'
           include-prerelease: true
-
+      - name: Build with dotnet
+        run: dotnet build Ppt23.API/Ppt23.API.csproj --configuration Release
+        
       - name: Publish with dotnet #do určené složky publikuje aplikace, v release configuraci
         run: dotnet publish Ppt23.API/Ppt23.API.csproj --configuration Release --output ${{env.PUBLISH_DIR}}
 
