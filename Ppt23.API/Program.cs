@@ -17,6 +17,7 @@ if(dbPath == null)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite($"FileName={dbPath}"));
+builder.Services.AddScoped<SeedingData>();
 
 builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
     policy.WithOrigins(corsAllowedOrigin)
@@ -121,5 +122,6 @@ app.MapGet("/vybaveni/{x}", (string x, PptDbContext _db) =>
     return seznam;
 });
 
+await app.Services.CreateScope().ServiceProvider.GetRequiredService<SeedingData>().SeedData();
 
 app.Run();
