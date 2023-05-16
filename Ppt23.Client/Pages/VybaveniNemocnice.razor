@@ -40,7 +40,7 @@
 
 
             <div class="bg-white rounded-b-lg border-2 rounded-b-lg border-black border-collapse">
-                
+
 
                 @if (isInNewMode)
                 {
@@ -65,7 +65,7 @@
                 {
                     <VybaveRow Vyb="vyb"
                            SmazEventCallback="async () => await smazVybaveni(vyb)"
-                           RevizeEventCallBack="async () =>{vyb.LASTREV = DateTime.Now; await upravitVybaveni(vyb);}"
+                           RevizeEventCallBack="async () =>{await novaRevize(vyb); await upravitVybaveni(vyb);}"
                            EditDoneCallback="async (vyb) => await upravitVybaveni(vyb)">
                     </VybaveRow>
 
@@ -92,6 +92,13 @@
         }
     }
 
+    public async Task novaRevize(VybaveniVm vyb)
+    {
+        var response = await Http.PostAsJsonAsync($"revize/{vyb.Id}", vyb.Id);
+        vyb.LASTREV = DateTime.Now;
+    }
+
+
     public async Task upravitVybaveni(VybaveniVm vyb)
     {
         var response = await Http.PutAsJsonAsync($"vybaveni/{vyb.Id}", vyb);
@@ -114,10 +121,10 @@
     {
         seznamVybaveni = null;
 
-        await Task.Delay(1000);
+        await Task.Delay(500);
         seznamVybaveni = await Http.GetFromJsonAsync<List<VybaveniVm>>("/vybaveni");
 
-        if(seznamVybaveni is null)
+        if (seznamVybaveni is null)
         {
             return;
         }

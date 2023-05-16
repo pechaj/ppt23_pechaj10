@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 var corsAllowedOrigin = builder.Configuration.GetSection("CorsAllowedOrigins").Get<string[]>();
 string dbPath = builder.Configuration.GetValue<string>("dbPath");
 
-if(dbPath == null)
+if (dbPath == null)
 {
     throw new ArgumentNullException(nameof(dbPath));
 }
@@ -44,9 +44,53 @@ app.UseHttpsRedirection();
 // Get seznamu
 app.MapGet("/vybaveni", (PptDbContext _db) =>
 {
+    var vybaveniVms = new List<VybaveniVm>();
 
-    Console.WriteLine($"Pocet vybaveni v db: {_db.Vybavenis.Count()}");
-    return _db.Vybavenis.ToList();
+    var revizesList = _db.Revizes.ToList();
+
+    foreach (var item in _db.Vybavenis.ToList())
+    {
+        VybaveniVm? en = _db.Vybavenis.SingleOrDefault(x => x.Id == item.Id).Adapt<VybaveniVm>();
+
+        var vybRevizes = revizesList.Where(r => r.VybaveniId == en.Id).ToList().OrderByDescending(x => x.DateTime);
+
+        if (vybRevizes.Any())
+        {
+            en.LASTREV = vybRevizes.First().DateTime;
+        }
+        else
+        {
+            en.LASTREV = en.DATEBUY;
+        }
+
+        vybaveniVms.Add(en);
+    }
+    return vybaveniVms;
+});
+
+//Get jedne revize podle ID
+app.MapGet("/revize/{Id}", (Guid Id, PptDbContext db) =>
+{
+    var revize = db.Revizes.ToList().Where(x => x.Id == Id);
+
+    return revize;
+});
+
+// Nova revize
+app.MapPost("/revize/{Id}", (Guid Id, PptDbContext _db) =>
+{
+    Vybaveni? vyb = _db.Vybavenis.SingleOrDefault(x => x.Id == Id);
+    var rev = new Revize();
+
+    rev.Id = Guid.Empty;
+    rev.Name = $"Revize {vyb.Name} #{vyb.Revizes.Count+1}";
+    rev.VybaveniId = vyb.Id;
+    rev.Vybaveni = vyb;
+    rev.DateTime = DateTime.Now;
+
+    _db.Vybavenis.SingleOrDefault(r => r.Id == rev.VybaveniId)?.Revizes.Add(rev);
+
+    _db.SaveChanges();
 });
 
 // Novy item v seznamu
@@ -68,7 +112,9 @@ app.MapDelete("/vybaveni/{Id}", (Guid Id, PptDbContext _db) =>
     var item = _db.Vybavenis.SingleOrDefault(x => x.Id == Id);
 
     if (item == null)
-        return Results.NotFound("Tato položka nebyla nalezena!!");
+    {
+        return Results.NotFound("Tato položka nebyla nalezena!");
+    }
 
     _db.Vybavenis.Remove(item);
     _db.SaveChanges();
@@ -96,6 +142,8 @@ app.MapPut("/vybaveni/{Id}", (Vybaveni en, Guid Id, PptDbContext _db) =>
     }
 });
 
+// Get na test
+/*
 app.MapGet("/vybaveni/{x}", (string x, PptDbContext _db) =>
 {
     List<RevizeViewModel> seznam = new List<RevizeViewModel>();
@@ -120,6 +168,17 @@ app.MapGet("/vybaveni/{x}", (string x, PptDbContext _db) =>
         }
     _db.SaveChanges();
     return seznam;
+});
+*/
+
+// Detail vybaveni
+app.MapGet("/vybaveni/{vybId}", (Guid vybId, PptDbContext _db) =>
+{
+    Vybaveni? hledany = _db.Vybavenis.ToList().SingleOrDefault(x => x.Id == vybId);
+
+    var en = hledany.Adapt<VybaveniSRevizemaVm>();
+
+    return en;
 });
 
 await app.Services.CreateScope().ServiceProvider.GetRequiredService<SeedingData>().SeedData();

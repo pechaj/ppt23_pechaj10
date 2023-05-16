@@ -16,10 +16,18 @@
     @if (!IsInEditMode)
     {
 
-        <div class="p-2 place-content-center text-center"><a href="vybaveni/{@Vyb.Id}">@Vyb.NAME</a></div>
-        <div class="p-2 text-center">@Vyb.CENA Kč</div>
+        <div class="p-2 place-content-center text-center"><a href="vybaveni/{@Vyb.Id}">@Vyb.Name</a></div>
+        <div class="p-2 text-center">@Vyb.Cena Kč</div>
         <div class="p-2 text-center">@Vyb.DATEBUY.ToString("yyyy-MM-dd")</div>
-        <div class="p-2 text-center">@Vyb.LASTREV.ToString("yyyy-MM-dd")</div>
+        @if (Vyb.LASTREV is null)
+        {
+            <div class="p-2 text-center">N/A</div>
+        }
+        else {
+            <div class="p-2 text-center">@Vyb.LASTREV.Value.ToString("yyyy-MM-dd")</div>
+        }
+
+
         <div class="p-2 text-center">@((Vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
 
         <div class="grid grid-cols-3 text-sm">
@@ -44,13 +52,13 @@
             <div class="grid grid-cols-6 border-black border-1.5 ">
 
                 <div class="p-2 text-center">
-                    <InputText @bind-Value=@EditVyb.NAME />
-                    <ValidationMessage For="() => EditVyb.NAME" />
+                    <InputText @bind-Value=@EditVyb.Name />
+                    <ValidationMessage For="() => EditVyb.Name" />
                 </div>
 
                 <div class="p-2 text-center">
-                    <InputNumber @bind-Value=@EditVyb.CENA />
-                    <ValidationMessage For="() => EditVyb.CENA" />
+                    <InputNumber @bind-Value=@EditVyb.Cena />
+                    <ValidationMessage For="() => EditVyb.Cena" />
                 </div>
 
                 <div class="p-2 text-center">

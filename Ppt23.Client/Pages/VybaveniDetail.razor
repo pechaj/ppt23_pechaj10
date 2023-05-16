@@ -1,44 +1,68 @@
 ﻿@page "/vybaveni/{Id:guid}"
 @inject HttpClient Http
+@using Mapster;
 @using Microsoft.AspNetCore.Components.Forms
 @using Ppt23.Shared
-@if (vyb is null)
+
+@if (vyb is null || RevVyb is null)
 {
     <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
         <div class=" border-t-transparent border-solid animate-spin  rounded-full border-teal-600 border-8 h-16 w-16"></div>
     </div>
     return;
 }
+
 <head>
-    <title>@vyb.NAME</title>
+    <title>@vyb.Name</title>
     <meta charset="utf-8" />
 </head>
 
 
 
-<h1 class="font-bold">Detail vybaveni: <span class="text-emerald-600 font-light">@vyb.NAME</span></h1>
+<h1 class="font-bold">Detail vybaveni: <span class="text-emerald-600 font-light">@vyb.Name</span></h1>
 @if (!IsInEditMode)
 {
-    <div class="grid grid-cols-2 gap-x-1">
-        <div class="basis-1/4 font-bold text-m">Název:</div>
-        <div class="basis-1/4 text-m">@vyb.NAME</div>
+    <div class="grid grid-cols-2 m-2">
 
-        <div class="basis-1/4 font-bold text-m">ID:</div>
-        <div class="basis-1/4 text-m">@vyb.Id</div>
+        <div class="grid grid-cols-2 gap-x-1">
+            <div class="basis-1/4 font-bold text-m">Název:</div>
+            <div class="basis-1/4 text-m">@vyb.Name</div>
 
-        <div class="font-bold text-m">Cena</div>
-        <div class="text-m">@vyb.CENA Kč</div>
+            <div class="basis-1/4 font-bold text-m">ID:</div>
+            <div class="basis-1/4 text-m">@vyb.Id</div>
 
-        <div class="font-bold text-m">Datum nákupu:</div>
-        <div class="text-m">@vyb.DATEBUY</div>
+            <div class="font-bold text-m">Cena</div>
+            <div class="text-m">@vyb.Cena Kč</div>
 
-        <div class="font-bold text-m">Datum poslední revize</div>
-        <div class="text-m">@vyb.LASTREV</div>
+            <div class="font-bold text-m">Datum nákupu:</div>
+            <div class="text-m">@vyb.DATEBUY</div>
 
-        <div class="font-bold text-m">Potřebuje revizi?</div>
-        <div class="text-m">@((vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+            <div class="font-bold text-m">Datum poslední revize</div>
+            <div class="text-m">@vyb.LASTREV</div>
+
+            <div class="font-bold text-m">Potřebuje revizi?</div>
+            <div class="text-m">@((vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
+        </div>
+
+        <div class="grid grid-cols-3 border-sky-900 border-2 rounded border-collapse">
+
+            <div class="basis-1/4 font-bold text-m bg-cyan-500">Název</div>
+            <div class="font-bold text-m bg-cyan-500">ID</div>
+            <div class="font-bold text-m bg-cyan-500">Datum</div>
+
+            @if (RevVyb.Revizes is not null)
+            {
+                @foreach (var item in RevVyb.Revizes)
+                {
+                    <div class="text-m border-sky-900 border border-collapse p-2">@item.Name</div>
+                    <div class="text-xs text-gray-600 border-sky-900 border border-collapse p-2">@item.Id</div>
+                    <div class="text-m border-sky-900 border border-collapse p-2">@item.DateTime</div>
+                }
+            }
+        </div>
+
     </div>
-    <button class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-400"
+    <button class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-600 hover:bg-yellow-400"
         @onclick="() => TurnOnEdit()">
         Upravit
     </button>
@@ -50,8 +74,8 @@ else if (EditVyb is not null)
             <DataAnnotationsValidator />
             <div class="basis-1/4 font-bold text-m">Název:</div>
             <div class="basis-1/4 text-m">
-                <InputText @bind-Value=@EditVyb.NAME />
-                <ValidationMessage For="() => EditVyb.NAME" />
+                <InputText @bind-Value=@EditVyb.Name />
+                <ValidationMessage For="() => EditVyb.Name" />
             </div>
 
             <div class="basis-1/4 font-bold text-m">ID:</div>
@@ -59,8 +83,8 @@ else if (EditVyb is not null)
 
             <div class="font-bold text-m">Cena</div>
             <div class="text-m">
-                <InputNumber @bind-Value=@EditVyb.CENA />
-                <ValidationMessage For="() => EditVyb.CENA" />
+                <InputNumber @bind-Value=@EditVyb.Cena />
+                <ValidationMessage For="() => EditVyb.Cena" />
             </div>
 
             <div class="font-bold text-m">Datum nákupu:</div>
@@ -76,16 +100,16 @@ else if (EditVyb is not null)
 
             <div class="font-bold text-m">Potřebuje revizi?</div>
             <div class="text-m">@((vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
-        
-        <div class="text-m">
-            <button type="submit" class="rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
-                &#10004;
-            </button>
-            <button type="button" @onclick="() => IsInEditMode = false"
-                    class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-700">
-                &#10006;
-            </button>
-        </div>
+
+            <div class="text-m">
+                <button type="submit" class="rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
+                    &#10004;
+                </button>
+                <button type="button" @onclick="() => IsInEditMode = false"
+                        class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-700">
+                    &#10006;
+                </button>
+            </div>
         </EditForm>
 
     </div>
@@ -96,14 +120,16 @@ else if (EditVyb is not null)
     [Parameter] public Guid Id { get; set; }
     VybaveniVm? vyb;
     VybaveniVm? EditVyb;
+    VybaveniSRevizemaVm? RevVyb;
     bool IsInEditMode;
+
 
     private void TurnOnEdit()
     {
         if (vyb != null)
         {
             IsInEditMode = true;
-            EditVyb = vyb.Copy();
+            EditVyb = vyb;
         }
     }
     private async Task Submit()
@@ -118,7 +144,13 @@ else if (EditVyb is not null)
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(100);
-        vyb = await Http.GetFromJsonAsync<VybaveniVm>($"vybaveni/{Id}");
+        await Task.Delay(500);
+        List<VybaveniVm>? vybaveniVms = await Http.GetFromJsonAsync<List<VybaveniVm>>("/vybaveni");
+
+        RevVyb = await Http.GetFromJsonAsync<VybaveniSRevizemaVm>($"vybaveni/{Id}");
+        vyb = vybaveniVms?.SingleOrDefault(x => x.Id == RevVyb?.Id);
+        
+        
+
     }
 }

@@ -5,7 +5,7 @@
 namespace Ppt23.API.Migrations
 {
     /// <inheritdoc />
-    public partial class repairmigration : Migration
+    public partial class revizemigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

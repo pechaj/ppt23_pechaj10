@@ -11,8 +11,8 @@ using Ppt23.API.Data;
 namespace Ppt23.API.Migrations
 {
     [DbContext(typeof(PptDbContext))]
-    [Migration("20230508190144_repair migration")]
-    partial class repairmigration
+    [Migration("20230513173932_revize migration")]
+    partial class revizemigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,10 +26,18 @@ namespace Ppt23.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.Property<DateTime?>("DateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NAME")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("VybaveniId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("VybaveniId");
 
                     b.ToTable("Revizes");
                 });
@@ -46,9 +54,6 @@ namespace Ppt23.API.Migrations
                     b.Property<DateTime>("DATEBUY")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("LASTREV")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("NAME")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -56,6 +61,20 @@ namespace Ppt23.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vybavenis");
+                });
+
+            modelBuilder.Entity("Ppt23.API.Data.Revize", b =>
+                {
+                    b.HasOne("Ppt23.API.Data.Vybaveni", null)
+                        .WithMany("VybRevizes")
+                        .HasForeignKey("VybaveniId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Ppt23.API.Data.Vybaveni", b =>
+                {
+                    b.Navigation("VybRevizes");
                 });
 #pragma warning restore 612, 618
         }
