@@ -16,6 +16,8 @@ namespace Ppt23.API.Data
         
         public DbSet<Revize> Revizes => Set<Revize>();
 
+        public DbSet<Ukon> Ukons => Set<Ukon>();
+
     }
 
 }

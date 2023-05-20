@@ -13,6 +13,7 @@ namespace Ppt23.API.Data
         public DateTime DATEBUY { get; set; }
         public int Cena { get; set; }
         public List<Revize> Revizes { get; set; } = new();
+        public List<Ukon> Ukons { get; set; } = new();
 
         public void pridatRevizes(PptDbContext _db)
         {
@@ -31,11 +32,29 @@ namespace Ppt23.API.Data
                 };
 
                 rev.SetRandomDate(this.Adapt<VybaveniVm>(), this.DATEBUY, DateTime.Now);
-                rev.VybaveniId = this.Id;
 
                 Revizes.Add(rev);
                 _db.Revizes.Add(rev);
             }
+        }
+
+        public void pridatUkons(PptDbContext _db)
+        {
+            string[] ukony = { "CT sken", "Ultrazvukové vyšetření", "MRI sken", "Rentgen" };
+            Random random = new Random();
+
+            Ukon ukon = new Ukon
+            {
+                NazevAkce = ukony[random.Next(ukony.Length)],
+                Id = Guid.Empty,
+                Vybaveni = this,
+                VybaveniId = Id
+            };
+            ukon.SetRandomDate(this.Adapt<VybaveniVm>(), DATEBUY, DateTime.Now);
+
+            Ukons.Add(ukon);
+            _db.Ukons.Add(ukon);
+            
         }
     }
 }

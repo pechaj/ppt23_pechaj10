@@ -12,5 +12,6 @@ namespace Ppt23.Shared
         public Guid Id { get; set; }
         public string? Name { get; set; }
         public List<RevizeViewModel>? Revizes { get; set; } = new List<RevizeViewModel>();
+        public List<UkonVm>? Ukons { get; set; } = new List<UkonVm>();
     }
 }

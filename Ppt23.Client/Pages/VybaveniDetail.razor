@@ -20,9 +20,13 @@
 
 
 <h1 class="font-bold">Detail vybaveni: <span class="text-emerald-600 font-light">@vyb.Name</span></h1>
+<button class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-600 hover:bg-yellow-400"
+        @onclick="() => TurnOnEdit()">
+    Upravit
+</button>
 @if (!IsInEditMode)
 {
-    <div class="grid grid-cols-2 m-2">
+    <div class="grid grid-cols-2 m-2 gap-y-2">
 
         <div class="grid grid-cols-2 gap-x-1">
             <div class="basis-1/4 font-bold text-m">Název:</div>
@@ -46,9 +50,9 @@
 
         <div class="grid grid-cols-3 border-sky-900 border-2 rounded border-collapse">
 
-            <div class="basis-1/4 font-bold text-m bg-cyan-500">Název</div>
-            <div class="font-bold text-m bg-cyan-500">ID</div>
-            <div class="font-bold text-m bg-cyan-500">Datum</div>
+            <div class="text-center font-bold text-m bg-cyan-500">Název</div>
+            <div class="text-center font-bold text-m bg-cyan-500">ID</div>
+            <div class="text-center font-bold text-m bg-cyan-500">Datum</div>
 
             @if (RevVyb.Revizes is not null)
             {
@@ -61,11 +65,19 @@
             }
         </div>
 
+        <div class="row-start-2 row-end-3 col-start-2 col-end-3 border-sky-900 border-2 rounded border-collapse">
+
+            <div class="text-center font-bold text-m bg-emerald-200">Seznam úkonů vybavení</div>
+
+            @if (RevVyb.Ukons is not null)
+            {
+                @foreach (var item in RevVyb.Ukons)
+                {
+                    <div class="text-m border-sky-900 border border-collapse p-2">Úkon @item.NazevAkce byl proveden dne @item.DateTime.</div>
+                }
+            }
+        </div>
     </div>
-    <button class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-600 hover:bg-yellow-400"
-        @onclick="() => TurnOnEdit()">
-        Upravit
-    </button>
 }
 else if (EditVyb is not null)
 {

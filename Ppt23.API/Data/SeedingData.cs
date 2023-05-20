@@ -23,6 +23,7 @@ namespace Ppt23.API.Data
                     var en = vyb.Adapt<Vybaveni>();
 
                     en.pridatRevizes(_db);
+                    en.pridatUkons(_db);
                     _db.Vybavenis.Add(en);
 
 

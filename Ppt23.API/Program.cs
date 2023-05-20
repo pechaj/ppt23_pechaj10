@@ -174,9 +174,12 @@ app.MapGet("/vybaveni/{x}", (string x, PptDbContext _db) =>
 // Detail vybaveni
 app.MapGet("/vybaveni/{vybId}", (Guid vybId, PptDbContext _db) =>
 {
-    Vybaveni? hledany = _db.Vybavenis.ToList().SingleOrDefault(x => x.Id == vybId);
+    Vybaveni? hledany = _db.Vybavenis
+    .Include(x => x.Revizes)
+    .Include(x => x.Ukons)
+    .SingleOrDefault(x => x.Id == vybId);
 
-    var en = hledany.Adapt<VybaveniSRevizemaVm>();
+    var en = hledany?.Adapt<VybaveniSRevizemaVm>();
 
     return en;
 });
