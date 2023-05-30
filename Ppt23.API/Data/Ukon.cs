@@ -7,6 +7,9 @@ namespace Ppt23.API.Data
         public Guid Id { get; set; }
         public Vybaveni Vybaveni { get; set; } = null!;
         public Guid VybaveniId { get; set; }
+
+        public Pracovnik pracovnik { get; set; } = null!;
+        public Guid? PracovnikId { get; set; } = null!;
         public string NazevAkce { get; set; } = null!;
         public DateTime DateTime { get; set; }
 

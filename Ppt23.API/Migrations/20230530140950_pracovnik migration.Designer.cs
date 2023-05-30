@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ppt23.API.Data;
 
@@ -10,9 +11,11 @@ using Ppt23.API.Data;
 namespace Ppt23.API.Migrations
 {
     [DbContext(typeof(PptDbContext))]
-    partial class PptDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230530140950_pracovnik migration")]
+    partial class pracovnikmigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -74,8 +77,6 @@ namespace Ppt23.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PracovnikId");
-
                     b.HasIndex("VybaveniId");
 
                     b.ToTable("Ukons");
@@ -115,10 +116,6 @@ namespace Ppt23.API.Migrations
 
             modelBuilder.Entity("Ppt23.API.Data.Ukon", b =>
                 {
-                    b.HasOne("Ppt23.API.Data.Pracovnik", "pracovnik")
-                        .WithMany()
-                        .HasForeignKey("PracovnikId");
-
                     b.HasOne("Ppt23.API.Data.Vybaveni", "Vybaveni")
                         .WithMany("Ukons")
                         .HasForeignKey("VybaveniId")
@@ -126,8 +123,6 @@ namespace Ppt23.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Vybaveni");
-
-                    b.Navigation("pracovnik");
                 });
 
             modelBuilder.Entity("Ppt23.API.Data.Vybaveni", b =>

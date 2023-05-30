@@ -18,6 +18,8 @@ namespace Ppt23.API.Data
 
         public DbSet<Ukon> Ukons => Set<Ukon>();
 
+        public DbSet<Pracovnik> Pracovniks => Set<Pracovnik>();
+
     }
 
 }

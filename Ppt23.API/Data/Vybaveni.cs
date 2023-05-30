@@ -41,19 +41,47 @@ namespace Ppt23.API.Data
         public void pridatUkons(PptDbContext _db)
         {
             string[] ukony = { "CT sken", "Ultrazvukové vyšetření", "MRI sken", "Rentgen" };
+
             Random random = new Random();
 
-            Ukon ukon = new Ukon
-            {
-                NazevAkce = ukony[random.Next(ukony.Length)],
-                Id = Guid.Empty,
-                Vybaveni = this,
-                VybaveniId = Id
-            };
-            ukon.SetRandomDate(this.Adapt<VybaveniVm>(), DATEBUY, DateTime.Now);
+            for (int i = 0; i < random.Next(1, 4); i++) {
+                if (random.Next(2) == 1)
+                {
+                    Pracovnik pracovnik = new Pracovnik();
 
-            Ukons.Add(ukon);
-            _db.Ukons.Add(ukon);
+                    Ukon ukon = new Ukon
+                    {
+                        NazevAkce = ukony[random.Next(ukony.Length)],
+                        Id = Guid.Empty,
+                        Vybaveni = this,
+                        VybaveniId = Id,
+                        pracovnik = pracovnik,
+                        PracovnikId = pracovnik.Id
+                    };
+
+                    ukon.SetRandomDate(this.Adapt<VybaveniVm>(), DATEBUY, DateTime.Now);
+
+                    Ukons.Add(ukon);
+                    _db.Ukons.Add(ukon);
+                }
+                else
+                {
+                    Ukon ukon = new Ukon
+                    {
+                        NazevAkce = ukony[random.Next(ukony.Length)],
+                        Id = Guid.Empty,
+                        Vybaveni = this,
+                        VybaveniId = Id
+                    };
+
+                    ukon.SetRandomDate(this.Adapt<VybaveniVm>(), DATEBUY, DateTime.Now);
+
+                    Ukons.Add(ukon);
+                    _db.Ukons.Add(ukon);
+                }
+            }
+
+            
             
         }
     }

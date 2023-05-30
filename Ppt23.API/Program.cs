@@ -5,7 +5,7 @@ using Ppt23.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 var corsAllowedOrigin = builder.Configuration.GetSection("CorsAllowedOrigins").Get<string[]>();
-string dbPath = builder.Configuration.GetValue<string>("dbPath");
+string? dbPath = builder.Configuration.GetValue<string>("dbPath");
 
 if (dbPath == null)
 {
@@ -177,6 +177,7 @@ app.MapGet("/vybaveni/{vybId}", (Guid vybId, PptDbContext _db) =>
     Vybaveni? hledany = _db.Vybavenis
     .Include(x => x.Revizes)
     .Include(x => x.Ukons)
+    .ThenInclude(x => x.pracovnik)
     .SingleOrDefault(x => x.Id == vybId);
 
     var en = hledany?.Adapt<VybaveniSRevizemaVm>();

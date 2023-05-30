@@ -18,14 +18,17 @@
 
             <span class="font-bold font-mono bg-red-200">@s</span>
 
-            <p class="w-auto">Číslo k uhodnutí(debug):</p>
+            <p class="w-auto">Číslo k uhodnutí(debug): <p class="italic bg-green-200 font-bold font-mono px-10 w-24">@cislo</p></p>
 
-            <p class="italic bg-green-200 font-bold font-mono px-10 w-24">@cislo</p>
+            
         </div>
     </div>
 </body>
 @code
 {
+    [Parameter]
+    public int Value { get; set; }
+
     Random r = new Random();
 
     int hadaneCislo;
@@ -37,6 +40,7 @@
     void restart()
     {
         cislo = randomCislo();
+        Value = cislo;
     }
 
     void Hadam()

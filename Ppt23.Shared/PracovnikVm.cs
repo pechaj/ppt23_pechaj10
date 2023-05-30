@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ppt23.Shared
 {
-    public class UkonVm
+    public class PracovnikVm
     {
         public Guid Id { get; set; }
-        public string NazevAkce { get; set; } = null!;
-        public DateTime DateTime { get; set; }
-
-        public PracovnikVm? pracovnik { get; set; }
+        public string? Jmeno { get; set; }
     }
 }

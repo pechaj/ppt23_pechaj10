@@ -73,11 +73,49 @@
             {
                 @foreach (var item in RevVyb.Ukons)
                 {
-                    <div class="text-m border-sky-900 border border-collapse p-2">Úkon @item.NazevAkce byl proveden dne @item.DateTime.</div>
-                }
+                    if(item.pracovnik is not null) 
+                    {
+                        <div class="text-m border-sky-900 border border-collapse p-2">
+                            Úkon <strong class="text-green-700">@item.NazevAkce</strong> byl proveden @item.pracovnik?.Jmeno dne @item.DateTime.
+                        </div>
+                    }
+                    else{
+                        <div class="text-m border-sky-900 border border-collapse p-2">
+                            Úkon @item.NazevAkce byl proveden žádný pracovník dne @item.DateTime
+                            </div>
+                    }
+                    }
             }
         </div>
     </div>
+    <button class="rounded border-2 border-black text-black m-1 p-1 bg-blue-600 hover:bg-blue-400"
+        @onclick="() => newUkon()">
+        Nový úkon
+    </button>
+    
+    @if (ukonMode)
+    {
+        <div>
+        <EditForm class="col-span-2" Model=ukon OnValidSubmit="() => SubmitUkon()">
+            <div class="basis-1/4 font-bold text-m">Název akce:</div>
+                <InputText @bind-Value=@ukon.NazevAkce />
+
+                <div class="basis-1/4 font-bold text-m">Datum:</div>
+                <InputDate @bind-Value=@ukon.DateTime />
+
+                <div class="text-m">
+                    <button type="submit" class="rounded border-2 border-black text-black m-1 p-1 bg-green-500 hover:bg-green-700">
+                        &#10004;
+                    </button>
+                    <button type="button" @onclick="() => ukonMode = false"
+                            class="rounded border-2 border-black text-black m-1 p-1 bg-yellow-500 hover:bg-yellow-700">
+                        &#10006;
+                    </button>
+                </div>
+
+        </EditForm>
+        </div>
+    }
 }
 else if (EditVyb is not null)
 {
@@ -130,10 +168,13 @@ else if (EditVyb is not null)
 
 @code {
     [Parameter] public Guid Id { get; set; }
+    [Parameter] public VybaveniSRevizemaVm? _RevVyb { get; set; }
     VybaveniVm? vyb;
     VybaveniVm? EditVyb;
     VybaveniSRevizemaVm? RevVyb;
+    UkonVm? ukon;
     bool IsInEditMode;
+    bool ukonMode;
 
 
     private void TurnOnEdit()
@@ -144,6 +185,29 @@ else if (EditVyb is not null)
             EditVyb = vyb;
         }
     }
+
+    private void newUkon()
+    {
+        ukonMode = true;
+        ukon = new UkonVm
+            {
+                DateTime = DateTime.Today
+            };
+    }
+
+    private async Task SubmitUkon()
+    {
+        ArgumentNullException.ThrowIfNull(vyb);
+        ArgumentNullException.ThrowIfNull(ukon);
+
+        ukonMode = false;
+
+        RevVyb?.Ukons?.Add(ukon);
+        var response = await Http.PutAsJsonAsync($"vybaveni/{Id}", RevVyb);
+
+        StateHasChanged();
+    }
+
     private async Task Submit()
     {
         ArgumentNullException.ThrowIfNull(vyb);
@@ -160,6 +224,7 @@ else if (EditVyb is not null)
         List<VybaveniVm>? vybaveniVms = await Http.GetFromJsonAsync<List<VybaveniVm>>("/vybaveni");
 
         RevVyb = await Http.GetFromJsonAsync<VybaveniSRevizemaVm>($"vybaveni/{Id}");
+        _RevVyb = RevVyb;
         vyb = vybaveniVms?.SingleOrDefault(x => x.Id == RevVyb?.Id);
         
         
