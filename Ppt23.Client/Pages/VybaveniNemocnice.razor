@@ -76,6 +76,7 @@
 </body>
 
 @code {
+    [Parameter] public List<VybaveniVm>? _seznamVybaveni { get; set; }
     List<VybaveniVm>? seznamVybaveni;
     VybaveniVm? newModel;
     bool isInNewMode;

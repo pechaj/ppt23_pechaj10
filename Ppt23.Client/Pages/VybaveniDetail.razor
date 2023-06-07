@@ -169,6 +169,7 @@ else if (EditVyb is not null)
 @code {
     [Parameter] public Guid Id { get; set; }
     [Parameter] public VybaveniSRevizemaVm? _RevVyb { get; set; }
+    [Parameter] public VybaveniVm? _vyb { get; set; }
     VybaveniVm? vyb;
     VybaveniVm? EditVyb;
     VybaveniSRevizemaVm? RevVyb;
@@ -220,7 +221,7 @@ else if (EditVyb is not null)
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(500);
+        await Task.Delay(100);
         List<VybaveniVm>? vybaveniVms = await Http.GetFromJsonAsync<List<VybaveniVm>>("/vybaveni");
 
         RevVyb = await Http.GetFromJsonAsync<VybaveniSRevizemaVm>($"vybaveni/{Id}");

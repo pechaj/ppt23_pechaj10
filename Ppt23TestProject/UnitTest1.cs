@@ -1,7 +1,9 @@
 using Bunit;
+using Mapster;
 using Ppt23.Client.Components;
 using Ppt23.Client.Pages;
 using Ppt23.Shared;
+using System.ComponentModel;
 
 namespace Ppt23TestProject
 {
@@ -11,10 +13,10 @@ namespace Ppt23TestProject
         public void VybaveRowRendersCorrectly()
         {
 
-            // Arrange
+            
             var vyb = new VybaveniVm();
 
-            // Act
+            
             var cut = RenderComponent<VybaveRow>(parameters => parameters
                 .Add(p => p.Vyb, vyb)
 
@@ -22,37 +24,27 @@ namespace Ppt23TestProject
             
 
             // Assert
-            //Assert.NotNull(cut.Find("grid-cols-6"));
             Assert.Contains($"{vyb.Name}", cut.Markup);
         }
 
-        [Fact]
-        public void VybaveniDetailRevizesRendersCorrectly()
+        // chce to Mock HTTP klienta, nedokáže to poèkat na dokonèení OnInitialisedAsync()
+        /*[Fact]
+        public void VybaveniCountCorrect()
         {
-            var vyb = new VybaveniSRevizemaVm();
+            var vybVm = new VybaveniVm();
+            List<VybaveniVm> seznamVms = new List<VybaveniVm>();
 
-            var rev = new RevizeViewModel
-            {
-                Id = Guid.NewGuid(),
-                Name = "test",
-                DateTime = DateTime.Now,
-            };
+            var textService = new TaskCompletionSource<string>();
 
+            var cut = RenderComponent<VybaveniNemocnice>(parameters => parameters
+                .Add(p => p._seznamVybaveni, seznamVms));
 
-            vyb.Revizes.Add(rev);
+            textService.SetResult("Poèet vybavení");
+            cut.WaitForState(() => cut.Find("<div>").TextContent == "Poèet vybavení: 1");
 
-            var cut = RenderComponent<VybaveniDetail>(parameters => parameters
-                .Add(p => p._RevVyb, vyb));
-            
+            //Assert.Contains("Poèet vybavení: 1", cut.Markup);
+            cut.MarkupMatches("<div>Poèet vybavení: 1</div>");
 
-            if (vyb.Revizes.Any())
-            {
-                Assert.Contains($"{vyb.Revizes.Last().Id}", cut.Markup);
-            }
-            else
-            {
-                Assert.Empty(vyb.Revizes);
-            }
-        }
+        }*/
     }
 }
