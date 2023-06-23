@@ -1,9 +1,9 @@
 using Bunit;
-using Mapster;
+using Bunit.TestDoubles;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Ppt23.Client.Components;
-using Ppt23.Client.Pages;
 using Ppt23.Shared;
-using System.ComponentModel;
 
 namespace Ppt23TestProject
 {
@@ -25,26 +25,30 @@ namespace Ppt23TestProject
 
             // Assert
             Assert.Contains($"{vyb.Name}", cut.Markup);
+            Assert.Contains("Smazat", cut.Markup);
         }
 
-        // chce to Mock HTTP klienta, nedokáže to poèkat na dokonèení OnInitialisedAsync()
-        /*[Fact]
-        public void VybaveniCountCorrect()
+        [Fact]
+        public void VybaveniDeleteButton()
         {
-            var vybVm = new VybaveniVm();
-            List<VybaveniVm> seznamVms = new List<VybaveniVm>();
+            // Arrange
+            bool smazEventCallBack = false;
+            VybaveniVm vybaveni = new VybaveniVm();
 
-            var textService = new TaskCompletionSource<string>();
+            var cut = RenderComponent<VybaveRow>(parameters => parameters
+                .Add(p => p.Vyb, vybaveni)
+                .Add(p => p.SmazEventCallback, EventCallback.Factory.Create(this, () => smazEventCallBack = true))
+                );
 
-            var cut = RenderComponent<VybaveniNemocnice>(parameters => parameters
-                .Add(p => p._seznamVybaveni, seznamVms));
+            // Click
+            var buttons = cut.FindAll("button");
+            var deleteButton = buttons.FirstOrDefault(b => b.TextContent.Contains("Smazat"));
+            deleteButton?.Click();
 
-            textService.SetResult("Poèet vybavení");
-            cut.WaitForState(() => cut.Find("<div>").TextContent == "Poèet vybavení: 1");
+            // Assert
+            Assert.True(smazEventCallBack);
 
-            //Assert.Contains("Poèet vybavení: 1", cut.Markup);
-            cut.MarkupMatches("<div>Poèet vybavení: 1</div>");
 
-        }*/
+        }
     }
 }

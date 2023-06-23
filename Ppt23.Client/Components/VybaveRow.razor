@@ -1,14 +1,8 @@
-<head>
-    <meta charset="utf-8" />
-</head>
-
 @using Microsoft.AspNetCore.Components.Forms
 @inject HttpClient Http
 
-
-@if (Vyb == null && IsInEditMode) TurnOnEdit();
-
-
+@if (Vyb == null) return;
+@if (_Vyb == null && IsInEditMode) TurnOnEdit();
 
 <div class="hover:bg-gray-200 grid grid-cols-6 items-center border-black border-1.5 border-collapse
                     @((Vyb.IsRevNeeded) ? "bg-red-600 hover:bg-red-300" : "")">
@@ -31,7 +25,7 @@
         <div class="p-2 text-center">@((Vyb.IsRevNeeded) ? "Ano" : "Ne")</div>
 
         <div class="grid grid-cols-3 text-sm">
-            <button class="rounded border-2 border-black text-black m-1 p-1 bg-red-500 hover:bg-red-600"
+            <button id="DeleteButton" class="rounded border-2 border-black text-black m-1 p-1 bg-red-500 hover:bg-red-600"
                 @onclick="() => SmazEventCallback.InvokeAsync()">
                 Smazat
             </button>
@@ -93,7 +87,7 @@
 </div>
 
 @code {
-    [Parameter] public EventCallback<VybaveniVm> SmazEventCallback { get; set; }
+    [Parameter] public EventCallback SmazEventCallback { get; set; }
     [Parameter] public EventCallback RevizeEventCallBack { get; set; }
     [Parameter] public EventCallback<VybaveniVm> EditDoneCallback { get; set; }
 
@@ -102,7 +96,7 @@
     [Parameter] public bool IsInEditMode { get; set; }
 
     VybaveniVm? _Vyb;
-    VybaveniVm? EditVyb;
+    public VybaveniVm? EditVyb;
 
     [Parameter]
     public VybaveniVm? Vyb
