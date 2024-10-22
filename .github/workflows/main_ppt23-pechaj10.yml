@@ -55,5 +55,5 @@ jobs:
         with:
           app-name: 'ppt23-pechaj10'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7EA019E389B94C7EB3799D3391F418DA }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
