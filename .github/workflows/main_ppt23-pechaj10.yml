@@ -8,7 +8,8 @@ on:
     branches:
       - main
   workflow_dispatch:
-
+env: #proměnné, které můžeme používat dále pomocí env.PUBLISH_DIR
+  PUBLISH_DIR: vystup #výstupní složka kam se vybuildí aplikace (tuhle složku to vytvoří, na názvu nezáleží)
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,14 +25,16 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: Publish with dotnet #do určené složky publikuje aplikace, v release configuraci
+        run: dotnet publish  /Ppt23.Api/Ppt23.API.csproj --configuration Release --output ${{env.PUBLISH_DIR}}
+        # ☝️ Upravte dle názvu vašeho .sln
+
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.PUBLISH_DIR}}
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,5 +64,6 @@ jobs:
         with:
           app-name: 'ppt23-pechaj10'
           slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
           
