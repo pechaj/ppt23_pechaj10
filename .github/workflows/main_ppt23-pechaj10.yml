@@ -26,7 +26,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Publish with dotnet #do určené složky publikuje aplikace, v release configuraci
-        run: dotnet publish ./Ppt23.API/Ppt23.API.csproj --configuration Release --output ${{env.PUBLISH_DIR}}
+        run: dotnet publish ../Ppt23.API/Ppt23.API.csproj --configuration Release --output ${{env.PUBLISH_DIR}}
         # ☝️ Upravte dle názvu vašeho .sln
 
 
